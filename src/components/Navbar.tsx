@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Maximize2, Facebook, Twitter, Youtube, Instagram, Twitch, Menu, X } from 'lucide-react';
+import { Facebook, Twitter, Youtube, Instagram, Twitch, Menu, X } from 'lucide-react';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,7 +48,7 @@ export function Navbar() {
           <div className="hidden lg:flex items-center justify-between flex-1 pl-16">
             {/* Left Navigation */}
             <div className="flex items-center space-x-8 xl:space-x-12">
-              <a href="#" className="text-white font-medium hover:text-red-500 transition-colors">HOME</a>
+              <a href="#" className="text-white font-medium hover:text-red-500 transition-colors">Home</a>
               <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Brackets</a>
             </div>
 
@@ -55,12 +56,17 @@ export function Navbar() {
             <div className="flex items-center">
               <div className="flex items-center space-x-8 xl:space-x-12 mr-8 xl:mr-16">
                 <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Create Team</a>
-                <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">SignUp</a>
+                <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Learn More</a>
               </div>
 
               {/* Maximize Icon */}
               <div className="border-l border-gray-800 pl-8">
-                <Maximize2 className="w-6 h-6 text-white/80 hover:text-white cursor-pointer transition-colors" />
+                <SignedOut>
+                  <SignInButton />
+                </SignedOut>
+                <SignedIn>
+                  <UserButton />
+                </SignedIn>
               </div>
             </div>
           </div>
@@ -79,9 +85,10 @@ export function Navbar() {
         {/* Mobile Menu */}
         <div className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
           <div className="py-4 space-y-4 border-t border-gray-800">
-            <a href="#" className="block text-white font-medium hover:text-red-500 transition-colors">HOME</a>
+            <a href="#" className="block text-white font-medium hover:text-red-500 transition-colors">Home</a>
             <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">Brackets</a>
             <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">Create Team</a>
+            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">Learn More</a>
             <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">SignUp</a>
           </div>
         </div>

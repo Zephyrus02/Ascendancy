@@ -1,11 +1,15 @@
-import { Landing } from './pages/Landing';
+import { SignedIn, SignedOut} from "@clerk/clerk-react";
+import { Landing } from "./pages/Landing";
 
-function App() {
+export default function App() {
   return (
-    <div className="min-h-screen bg-[#111] text-white">
-      <Landing />
-    </div>
+    <header>
+      <SignedOut>
+        <Landing />
+      </SignedOut>
+      <SignedIn>
+        <Landing/>
+      </SignedIn>
+    </header>
   );
 }
-
-export default App;
