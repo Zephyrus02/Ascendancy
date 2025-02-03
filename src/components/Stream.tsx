@@ -38,29 +38,55 @@ export function Stream() {
             WATCH <span className="text-[#FF4655]">LIVE</span> STREAMS
           </h2>
           
+            {/* Custom Separator */}
+        <div className="flex justify-center mb-8">
+          <svg 
+            version="1.1" 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="124.985px" 
+            height="3.411px" 
+            viewBox="0 0 124.985 3.411"
+            className="w-32"
+          >
+            <polygon 
+              fill="#FFFFFF" 
+              points="0,0 124.985,0 124.985,1.121 96.484,1.121 86.944,3.411 38.67,3.411 29.162,1.121 0,1.121"
+            />
+          </svg>
+        </div>
+
           {/* Platform Toggle */}
-          <div className="inline-flex items-center bg-[#1a1a1a] p-1 rounded-lg">
+          <div className="flex items-center justify-center space-x-4">
             <button
               onClick={() => setActivePlatform('youtube')}
-              className={`flex items-center px-6 py-3 rounded-md space-x-2 transition-all duration-300
-                ${activePlatform === 'youtube' 
-                  ? 'bg-[#FF4655] text-white' 
-                  : 'text-white/60 hover:text-white'
-                }`}
+              className={`relative px-8 py-3 transform skew-x-[-20deg] overflow-hidden transition-all duration-300
+                ${activePlatform === 'youtube' ? 'bg-red-600' : 'bg-[#1a1a1a]'}`}
             >
-              <Youtube className="w-5 h-5" />
-              <span>YouTube</span>
+              <span className="relative z-10 flex items-center space-x-2 text-white font-medium transform skew-x-[20deg]">
+                <Youtube className="w-5 h-5" />
+                <span>YouTube</span>
+              </span>
+              <div 
+                className={`absolute inset-0 w-full h-full bg-gradient-to-r from-red-500 via-gray-100 to-red-500 
+                ${activePlatform === 'youtube' ? 'opacity-0' : 'opacity-0 hover:opacity-100'} 
+                -translate-x-full hover:translate-x-0 transition-all duration-500`}
+              />
             </button>
+            
             <button
               onClick={() => setActivePlatform('twitch')}
-              className={`flex items-center px-6 py-3 rounded-md space-x-2 transition-all duration-300
-                ${activePlatform === 'twitch' 
-                  ? 'bg-[#FF4655] text-white' 
-                  : 'text-white/60 hover:text-white'
-                }`}
+              className={`relative px-8 py-3 transform skew-x-[-20deg] overflow-hidden transition-all duration-300
+                ${activePlatform === 'twitch' ? 'bg-red-600' : 'bg-[#1a1a1a]'}`}
             >
-              <Twitch className="w-5 h-5" />
-              <span>Twitch</span>
+              <span className="relative z-10 flex items-center space-x-2 text-white font-medium transform skew-x-[20deg]">
+                <Twitch className="w-5 h-5" />
+                <span>Twitch</span>
+              </span>
+              <div 
+                className={`absolute inset-0 w-full h-full bg-gradient-to-r from-red-500 via-gray-100 to-red-500 
+                ${activePlatform === 'twitch' ? 'opacity-0' : 'opacity-0 hover:opacity-100'} 
+                -translate-x-full hover:translate-x-0 transition-all duration-500`}
+              />
             </button>
           </div>
         </div>

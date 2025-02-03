@@ -4,6 +4,7 @@ import { IconsBar } from './components/IconsBar';
 import { IntroSection } from './components/IntroSection';
 import { Announcements } from './components/Announcements';
 import { Stream } from './components/Stream';
+import { Trending } from './components/Trending';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <IntroSection />
       <Announcements />
       <Stream />
+      <Trending />
     </div>
   );
 }
