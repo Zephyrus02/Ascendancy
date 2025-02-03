@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Facebook, Twitter, Youtube, Instagram, Twitch, Menu, X } from 'lucide-react';
+import { Youtube, Instagram, Menu, X } from 'lucide-react';
+import { FaDiscord } from "react-icons/fa6";
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 export function Navbar() {
@@ -13,11 +14,16 @@ export function Navbar() {
           <div className="flex items-center justify-between h-12">
             {/* Social Links */}
             <div className="flex items-center space-x-4 lg:space-x-6">
-              <Facebook className="w-4 h-4 text-white/60 hover:text-white cursor-pointer transition-colors" />
-              <Twitter className="w-4 h-4 text-white/60 hover:text-white cursor-pointer transition-colors" />
+              <span className='text-white/60 font-medium mr-2'>Socials: </span>
+              <a href="">
               <Youtube className="w-4 h-4 text-white/60 hover:text-white cursor-pointer transition-colors" />
+              </a>
+              <a href="https://www.instagram.com/_.ascendancy._?igsh=N2Y0NWVocHY3cXFu" target="_blank">
               <Instagram className="w-4 h-4 text-white/60 hover:text-white cursor-pointer transition-colors" />
-              <Twitch className="w-4 h-4 text-white/60 hover:text-white cursor-pointer transition-colors" />
+              </a>
+              <a href="https://discord.gg/D3bA9bAaHV" target="_blank">
+              <FaDiscord className="w-4 h-4 text-white/60 hover:text-white cursor-pointer transition-colors" />
+              </a>
             </div>
 
             {/* Catchphrase */}

@@ -1,47 +1,50 @@
 import { useState, FormEvent } from 'react';
 import { Mail, User, MessageSquare, Phone, MapPin } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
-interface FormData {
-  name: string;
-  email: string;
+interface EmailFormData extends Record<string, string> {
+  from_name: string;
+  reply_to: string;
+  to_email: string;
   subject: string;
   message: string;
 }
 
 export function Contact() {
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
+  const [formData, setFormData] = useState<EmailFormData>({
+    from_name: '',
+    reply_to: '',
+    to_email: import.meta.env.VITE_EMAIL_ID,
     subject: '',
     message: ''
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setStatus('loading');
 
     try {
-      const response = await fetch('YOUR_EMAIL_ENDPOINT', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        formData,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+      
+      setStatus('success');
+      setFormData({
+        from_name: '',
+        reply_to: '',
+        to_email: 'aneeshraskar@gmail.com',
+        subject: '',
+        message: ''
       });
-
-      if (response.ok) {
-        setSubmitStatus('success');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        setSubmitStatus('error');
-      }
     } catch (error) {
-      setSubmitStatus('error');
+      console.error('EmailJS Error:', error);
+      setStatus('error');
     }
-
-    setIsSubmitting(false);
-    setTimeout(() => setSubmitStatus('idle'), 3000);
   };
 
   return (
@@ -113,6 +116,8 @@ export function Contact() {
           {/* Right Column - Form */}
           <div className="bg-[#1a1a1a] p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
+              
+              {/* Form Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -120,10 +125,10 @@ export function Contact() {
                   </div>
                   <input
                     type="text"
-                    name="name"
+                    name="from_name"
+                    value={formData.from_name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, from_name: e.target.value }))}
                     required
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                     className="w-full bg-[#111] text-white border border-gray-800 py-3 pl-12 pr-4
                              focus:outline-none focus:border-[#FF4655] focus:ring-1 focus:ring-[#FF4655]
                              transition-colors"
@@ -137,10 +142,10 @@ export function Contact() {
                   </div>
                   <input
                     type="email"
-                    name="email"
+                    name="reply_to"
+                    value={formData.reply_to}
+                    onChange={(e) => setFormData(prev => ({ ...prev, reply_to: e.target.value }))}
                     required
-                    value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                     className="w-full bg-[#111] text-white border border-gray-800 py-3 pl-12 pr-4
                              focus:outline-none focus:border-[#FF4655] focus:ring-1 focus:ring-[#FF4655]
                              transition-colors"
@@ -156,9 +161,9 @@ export function Contact() {
                 <input
                   type="text"
                   name="subject"
-                  required
                   value={formData.subject}
                   onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                  required
                   className="w-full bg-[#111] text-white border border-gray-800 py-3 pl-12 pr-4
                            focus:outline-none focus:border-[#FF4655] focus:ring-1 focus:ring-[#FF4655]
                            transition-colors"
@@ -168,9 +173,9 @@ export function Contact() {
 
               <textarea
                 name="message"
-                required
                 value={formData.message}
                 onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                required
                 rows={6}
                 className="w-full bg-[#111] text-white border border-gray-800 p-4
                          focus:outline-none focus:border-[#FF4655] focus:ring-1 focus:ring-[#FF4655]
@@ -181,22 +186,21 @@ export function Contact() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={status === 'loading'}
                   className="relative px-12 py-4 bg-[#FF4655] transform skew-x-[-20deg] overflow-hidden
-                           transition-all duration-300 disabled:opacity-50
-                           hover:bg-[#ff5e6b]"
+                           transition-all duration-300 hover:bg-[#ff5e6b]"
                 >
                   <span className="relative z-10 block text-white font-medium text-lg tracking-wider transform skew-x-[20deg]">
-                    {isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}
+                    {status === 'loading' ? 'SENDING...' : 'SEND MESSAGE'}
                   </span>
                 </button>
               </div>
-
-              {submitStatus === 'success' && (
-                <div className="text-center text-green-500">Message sent successfully!</div>
+              
+              {status === 'success' && (
+                <div className="text-green-500 text-center">Message sent successfully!</div>
               )}
-              {submitStatus === 'error' && (
-                <div className="text-center text-red-500">Failed to send message. Please try again.</div>
+              {status === 'error' && (
+                <div className="text-red-500 text-center">Failed to send message. Please try again.</div>
               )}
             </form>
           </div>
