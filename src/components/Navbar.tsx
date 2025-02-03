@@ -27,8 +27,8 @@ export function Navbar() {
             </div>
 
             {/* Catchphrase */}
-            <div className="text-sm text-white/60">
-              
+            <div className="text-sm text-white/60 font-medium tracking-wide animate-pulse">
+              <span className='text-white/60 font-medium mr-2'>RISE THROUGH THE RANKS | BECOME THE BEST</span>
             </div>
           </div>
         </div>
