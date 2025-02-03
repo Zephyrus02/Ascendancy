@@ -10,11 +10,16 @@ export default {
         },
         shimmer: {
           '100%': { transform: 'translateX(100%)' }
+        },
+        shine: {
+          '0%': { transform: 'translateX(-200%)' },
+          '100%': { transform: 'translateX(200%)' }
         }
       },
       animation: {
         scroll: 'scroll 25s linear infinite',
-        shimmer: 'shimmer 2s infinite'
+        shimmer: 'shimmer 2s infinite',
+        shine: 'shine 3s linear infinite',
       }
     },
   },

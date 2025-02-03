@@ -21,7 +21,7 @@ export function Navbar() {
 
             {/* Catchphrase */}
             <div className="text-sm text-white/60">
-              this is playerx, a theme for games, clans & esports
+              
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-20 lg:h-24">
           {/* Website Title */}
           <div className="text-lg lg:text-xl font-bold text-white">
-            Ascendancy
+            ASCENDANCY
           </div>
 
           {/* Mobile Menu Button */}
@@ -48,16 +48,14 @@ export function Navbar() {
             {/* Left Navigation */}
             <div className="flex items-center space-x-8 xl:space-x-12">
               <a href="#" className="text-white font-medium hover:text-red-500 transition-colors">HOME</a>
-              <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">PAGES</a>
-              <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">PORTFOLIO</a>
+              <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Brackets</a>
             </div>
 
             {/* Right Navigation */}
             <div className="flex items-center">
               <div className="flex items-center space-x-8 xl:space-x-12 mr-8 xl:mr-16">
-                <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">BLOG</a>
-                <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">SHOP</a>
-                <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">LANDING</a>
+                <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Create Team</a>
+                <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">SignUp</a>
               </div>
 
               {/* Maximize Icon */}
@@ -82,11 +80,9 @@ export function Navbar() {
         <div className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
           <div className="py-4 space-y-4 border-t border-gray-800">
             <a href="#" className="block text-white font-medium hover:text-red-500 transition-colors">HOME</a>
-            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">PAGES</a>
-            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">PORTFOLIO</a>
-            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">BLOG</a>
-            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">SHOP</a>
-            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">LANDING</a>
+            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">Brackets</a>
+            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">Create Team</a>
+            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">SignUp</a>
           </div>
         </div>
       </div>

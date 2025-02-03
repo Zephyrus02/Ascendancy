@@ -5,9 +5,9 @@ import { IntroSection } from '../components/IntroSection';
 import { Announcements } from '../components/Announcements';
 import { Stream } from '../components/Stream';
 import { Trending } from '../components/Trending';
-import { Contact } from '..//components/Contact';
+import { Contact } from '../components/Contact';
 
-export function Home() {
+export function Landing() {
   return (
     <div className="min-h-screen bg-[#111] text-white">
       <Navbar />

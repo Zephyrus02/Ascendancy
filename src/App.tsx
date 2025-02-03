@@ -1,9 +1,9 @@
-import { Home } from './pages/Home';
+import { Landing } from './pages/Landing';
 
 function App() {
   return (
     <div className="min-h-screen bg-[#111] text-white">
-      <Home />
+      <Landing />
     </div>
   );
 }

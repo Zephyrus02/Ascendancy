@@ -44,13 +44,31 @@ export function HeroCarousel() {
                 {slide.title}
               </h1>
               <div className="relative group">
-                <button className="relative px-12 py-4 bg-red-600 transform skew-x-[-20deg] overflow-hidden transition-all duration-300">
-                  <span className="relative z-10 block text-white font-medium text-lg tracking-wider transform skew-x-[20deg]">
+                <button 
+                  className="relative px-12 py-4 bg-[#FF4655] transform skew-x-[-20deg] 
+                           overflow-hidden transition-all duration-300 
+                           hover:bg-[#ff5e6b] hover:scale-105"
+                >
+                  <span 
+                    className="relative z-20 block text-white font-medium text-lg 
+                             tracking-wider transform skew-x-[20deg]"
+                  >
                     PLAY NOW
                   </span>
+                  
+                  {/* Shine effect */}
                   <div 
-                    className="absolute inset-0 w-full h-full bg-gradient-to-r from-red-500 via-gray-100 to-red-500 opacity-0 
-                    group-hover:opacity-100 -translate-x-full group-hover:translate-x-0 transition-all duration-500"
+                    className="absolute inset-0 z-10 w-full h-full 
+                             bg-gradient-to-r from-transparent via-white/20 to-transparent
+                             skew-x-[-20deg] animate-shine"
+                  />
+                  
+                  {/* Hover gradient */}
+                  <div 
+                    className="absolute inset-0 z-0 w-full h-full opacity-0
+                             bg-gradient-to-r from-[#ff5e6b] via-[#ff8b94] to-[#ff5e6b]
+                             group-hover:opacity-100 -translate-x-full 
+                             group-hover:translate-x-0 transition-all duration-500"
                   />
                 </button>
               </div>
@@ -65,9 +83,11 @@ export function HeroCarousel() {
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`h-1 transition-all duration-300 ${
-              currentSlide === index ? 'w-8 bg-red-500' : 'w-4 bg-white/50 hover:bg-white/80'
-            }`}
+            className={`h-1 transform transition-all duration-300 ease-out
+              ${currentSlide === index 
+                ? 'w-8 bg-[#FF4655] shadow-[0_0_10px_rgba(255,70,85,0.5)]' 
+                : 'w-4 bg-white/30 hover:bg-white/50 hover:w-6'
+              }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
@@ -75,27 +95,3 @@ export function HeroCarousel() {
     </div>
   );
 }
-
-export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  theme: {
-    extend: {
-      keyframes: {
-        scroll: {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-50%)' }
-        },
-        shimmer: {
-          '100%': { transform: 'translateX(100%)' }
-        }
-      },
-      animation: {
-        scroll: 'scroll 25s linear infinite',
-        shimmer: 'shimmer 2s infinite'
-      }
-    },
-  },
-  plugins: [],
-};
-
-
