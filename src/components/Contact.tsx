@@ -55,7 +55,7 @@ export function Contact() {
           <div className="space-y-8">
             <div>
               <h2 className="text-4xl md:text-5xl font-bold mb-8">
-                GET IN <span className="text-[#FF4655]">TOUCH</span>
+                Have A <span className="text-[#FF4655]">QUESTION?</span> SHOOT AWAY
               </h2>
               
               <div className="flex mb-8">
@@ -87,7 +87,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="text-white/40">Phone</p>
-                  <p className="text-white">+1 234 567 890</p>
+                  <p className="text-white">+91-73505755569</p>
                 </div>
               </div>
 
@@ -97,7 +97,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="text-white/40">Email</p>
-                  <p className="text-white">contact@valorant.com</p>
+                  <p className="text-white">aneesh.raskar02@gmail.com</p>
                 </div>
               </div>
 
@@ -107,7 +107,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="text-white/40">Address</p>
-                  <p className="text-white">Los Angeles, CA 90001</p>
+                  <p className="text-white">VIT Vellore, Vellore, Tamil Nadu</p>
                 </div>
               </div>
             </div>
