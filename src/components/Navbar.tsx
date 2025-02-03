@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Maximize2, Facebook, Twitter, Youtube, Instagram, Twitch, Menu, X } from 'lucide-react';
 
 export function Navbar() {
@@ -32,7 +32,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-20 lg:h-24">
           {/* Website Title */}
           <div className="text-lg lg:text-xl font-bold text-white">
-            PHANTOM FURY
+            Ascendancy
           </div>
 
           {/* Mobile Menu Button */}
@@ -70,9 +70,9 @@ export function Navbar() {
           {/* Center Logo with Extended Background - Hidden on mobile */}
           <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2">
             <div className="relative">
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-28 h-32 bg-[#1a1a1a] -z-10"></div>
-              <div className="w-20 h-20 bg-white flex items-center justify-center">
-                <span className="text-black text-3xl font-bold">X</span>
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-36 bg-[#1a1a1a] -z-10"></div>
+              <div className="w-24 h-24 bg-grey-dark flex items-center justify-center">
+                <img src="src/assets/icon.png" alt="logo" className="w-20 h-20 object-contain" />
               </div>
             </div>
           </div>

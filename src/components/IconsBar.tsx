@@ -9,7 +9,7 @@ const clientLogos = [
 
 export function IconsBar() {
   return (
-    <div className="bg-[#1a1a1a] py-12 md:py-16">
+    <div className="bg-[#1a1a1a] py-6 md:py-8">
       <div className="max-w-[90rem] mx-auto px-8 md:px-16">
         <div className="flex justify-between items-center">
           {clientLogos.map((logo, index) => (

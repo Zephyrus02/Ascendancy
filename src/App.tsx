@@ -3,7 +3,7 @@ import { HeroCarousel } from './components/HeroCarousel';
 import { IconsBar } from './components/IconsBar';
 import { IntroSection } from './components/IntroSection';
 import { Announcements } from './components/Announcements';
-
+import { Stream } from './components/Stream';
 
 function App() {
   return (
@@ -13,6 +13,7 @@ function App() {
       <IconsBar />
       <IntroSection />
       <Announcements />
+      <Stream />
     </div>
   );
 }
