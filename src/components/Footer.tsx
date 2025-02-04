@@ -1,4 +1,5 @@
-import { Facebook, Twitter, Youtube, Instagram, Twitch, ArrowUp } from 'lucide-react';
+import { Youtube, Instagram, ArrowUp } from 'lucide-react';
+import { FaDiscord } from 'react-icons/fa6';
 
 export function Footer() {
 
@@ -22,19 +23,13 @@ export function Footer() {
       {/* Social Links */}
       <div className="flex justify-center gap-6 mb-8">
         <a href="#" className="hover:text-gray-300 transition-colors">
-          <Facebook size={20} />
-        </a>
-        <a href="#" className="hover:text-gray-300 transition-colors">
-          <Twitter size={20} />
-        </a>
-        <a href="#" className="hover:text-gray-300 transition-colors">
           <Youtube size={20} />
         </a>
-        <a href="#" className="hover:text-gray-300 transition-colors">
+        <a href="https://www.instagram.com/_.ascendancy._?igsh=N2Y0NWVocHY3cXFu" className="hover:text-gray-300 transition-colors">
           <Instagram size={20} />
         </a>
-        <a href="#" className="hover:text-gray-300 transition-colors">
-          <Twitch size={20} />
+        <a href="https://discord.gg/D3bA9bAaHV" className="hover:text-gray-300 transition-colors">
+          <FaDiscord size={20} />
         </a>
       </div>
 
