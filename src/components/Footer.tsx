@@ -1,14 +1,6 @@
-import React, { useState } from 'react';
 import { Facebook, Twitter, Youtube, Instagram, Twitch, ArrowUp } from 'lucide-react';
 
 export function Footer() {
-  const [email, setEmail] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle newsletter subscription
-    setEmail('');
-  };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

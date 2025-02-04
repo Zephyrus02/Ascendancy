@@ -3,7 +3,7 @@ import { SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
 import { Landing } from "./pages/Landing";
 import { LearnMore } from "./pages/LearnMore";
 import { CreateTeam } from "./pages/CreateTeam";
-
+import { Profile } from "./pages/Profile";
 
 export default function App() {
   return (
@@ -33,6 +33,20 @@ export default function App() {
                 <SignInButton />
               </SignedOut>
               </>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <>
+                <SignedIn>
+                  <Profile />
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton />
+                </SignedOut>
+              </>
+
             }
           />
         </Routes>
