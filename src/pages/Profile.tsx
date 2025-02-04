@@ -108,12 +108,56 @@ function EditModal({ team, onClose, onSave }: EditModalProps) {
   );
 }
 
+// Add PaymentModal component
+function PaymentModal({ onClose, onSuccess, amount = 250 }: { 
+  onClose: () => void;
+  onSuccess: () => void;
+  amount?: number;
+}) {
+  return (
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+      <div className="bg-[#1a1a1a] p-8 rounded-lg max-w-md w-full mx-4">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold">Team Verification Payment</h3>
+          <button onClick={onClose} className="text-white/60 hover:text-white">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        
+        <div className="space-y-6">
+          <div className="text-center">
+            <p className="text-3xl font-bold text-[#FF4655]">₹{amount}</p>
+            <p className="text-white/60 mt-2">Tournament Registration Fee</p>
+          </div>
+
+          <div className="space-y-4">
+            <button 
+              onClick={onSuccess}
+              className="w-full py-3 bg-[#FF4655] hover:bg-[#ff5e6b] transition-colors font-medium"
+            >
+              Pay with RazorPay
+            </button>
+            
+            <button
+              onClick={onClose}
+              className="w-full py-3 bg-gray-700 hover:bg-gray-600 transition-colors font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function Profile() {
   const { user } = useUser();
   const [team, setTeam] = useState<Team | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -152,6 +196,27 @@ export function Profile() {
     setTeam(updatedTeam);
   };
 
+  const handleVerifyTeam = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/teams/${team?._id}/verify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to verify team');
+      }
+
+      const updatedTeam = await response.json();
+      setTeam(updatedTeam);
+      setShowPayment(false);
+    } catch (error) {
+      console.error('Error verifying team:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#111] text-white">
       <Navbar />
@@ -182,12 +247,22 @@ export function Profile() {
                 teamLogo={team.teamLogo}
                 verified={team.verified}
               />
-              <button
-                onClick={handleEditClick}
-                className="p-2 hover:bg-[#FF4655]/10 rounded-full transition-colors"
-              >
-                <Edit2 className="w-6 h-6 text-[#FF4655]" />
-              </button>
+              <div className="flex items-center space-x-4">
+                {!team.verified && (
+                  <button
+                    onClick={() => setShowPayment(true)}
+                    className="px-6 py-2 bg-green-600 hover:bg-green-700 transition-colors rounded-full"
+                  >
+                    Verify Team
+                  </button>
+                )}
+                <button
+                  onClick={handleEditClick}
+                  className="p-2 hover:bg-[#FF4655]/10 rounded-full transition-colors"
+                >
+                  <Edit2 className="w-6 h-6 text-[#FF4655]" />
+                </button>
+              </div>
             </div>
             <StatCards 
               membersCount={team.members.length} 
@@ -200,6 +275,13 @@ export function Profile() {
                 team={team}
                 onClose={() => setIsEditing(false)}
                 onSave={handleSave}
+              />
+            )}
+
+            {showPayment && (
+              <PaymentModal 
+                onClose={() => setShowPayment(false)}
+                onSuccess={handleVerifyTeam}
               />
             )}
           </>
