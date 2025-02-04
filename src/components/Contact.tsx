@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { Mail, User, MessageSquare, Phone, MapPin } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+import { Separator } from './Separator';
 
 interface EmailFormData extends Record<string, string> {
   from_name: string;
@@ -58,21 +59,7 @@ export function Contact() {
                 Have A <span className="text-[#FF4655]">QUESTION?</span> SHOOT AWAY
               </h2>
               
-              <div className="flex mb-8">
-                <svg 
-                  version="1.1" 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="124.985px" 
-                  height="3.411px" 
-                  viewBox="0 0 124.985 3.411"
-                  className="w-32"
-                >
-                  <polygon 
-                    fill="#FFFFFF" 
-                    points="0,0 124.985,0 124.985,1.121 96.484,1.121 86.944,3.411 38.67,3.411 29.162,1.121 0,1.121"
-                  />
-                </svg>
-              </div>
+              <Separator />
             </div>
 
             <p className="text-white/70 text-lg leading-relaxed">
@@ -87,7 +74,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="text-white/40">Phone</p>
-                  <p className="text-white">+91-73505755569</p>
+                  <p className="text-white">+91-73505755569 | +91-9405212115</p>
                 </div>
               </div>
 
@@ -97,7 +84,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="text-white/40">Email</p>
-                  <p className="text-white">aneesh.raskar02@gmail.com</p>
+                  <p className="text-white">savairamsaj@gmail.com | atharvchordiya04@gmail.com</p>
                 </div>
               </div>
 

@@ -6,6 +6,7 @@ import { Announcements } from '../components/Announcements';
 import { Stream } from '../components/Stream';
 import { Trending } from '../components/Trending';
 import { Contact } from '../components/Contact';
+import { Footer } from '../components/Footer';
 
 export function Landing() {
   return (
@@ -18,6 +19,7 @@ export function Landing() {
       <Stream />
       <Trending />
       <Contact />
+      <Footer />
     </div>
   );
 }

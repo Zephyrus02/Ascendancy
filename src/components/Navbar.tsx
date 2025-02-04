@@ -54,15 +54,16 @@ export function Navbar() {
           <div className="hidden lg:flex items-center justify-between flex-1 pl-16">
             {/* Left Navigation */}
             <div className="flex items-center space-x-8 xl:space-x-12">
-              <a href="#" className="text-white font-medium hover:text-red-500 transition-colors">Home</a>
-              <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Brackets</a>
+              <a href="/" className="text-white font-medium hover:text-red-500 transition-colors">Home</a>
+              <a href="/learn-more" className="text-white/80 font-medium hover:text-white transition-colors">Learn More</a>
             </div>
 
             {/* Right Navigation */}
             <div className="flex items-center">
               <div className="flex items-center space-x-8 xl:space-x-12 mr-8 xl:mr-16">
+              <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Brackets</a>
                 <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Create Team</a>
-                <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Learn More</a>
+                <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Rooms</a>
               </div>
 
               {/* Maximize Icon */}
