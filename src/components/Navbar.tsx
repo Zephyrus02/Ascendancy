@@ -84,7 +84,7 @@ export function Navbar() {
             <div className="relative">
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-36 bg-[#1a1a1a] -z-10"></div>
               <div className="w-24 h-24 bg-grey-dark flex items-center justify-center">
-                <img src="src/assets/icon.png" alt="logo" className="w-20 h-20 object-contain" />
+                <img src="https://i.postimg.cc/Pf93Hmmx/icon.png" alt="logo" className="object-contain" />
               </div>
             </div>
           </div>
