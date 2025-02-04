@@ -21,7 +21,7 @@ export function Footer() {
         <a href="/" className="hover:text-gray-300 transition-colors">HOME</a>
         <a href="/learn-more" className="hover:text-gray-300 transition-colors">LEARN MORE</a>
         <a href="#" className="hover:text-gray-300 transition-colors">BRACKETS</a>
-        <a href="#" className="hover:text-gray-300 transition-colors">CREATE TEAM</a>
+        <a href="/create-team" className="hover:text-gray-300 transition-colors">CREATE TEAM</a>
         <a href="#" className="hover:text-gray-300 transition-colors">ROOMS</a>
         <a href="#" className="hover:text-gray-300 transition-colors">ADMIN SPACE</a>
       </nav>

@@ -1,0 +1,108 @@
+import { useState } from 'react';
+import { Navbar } from '../components/Navbar';
+import { Footer } from '../components/Footer';
+import { TeamBasicInfo } from '../components/team/TeamBasicInfo';
+import { TeamMemberForm } from '../components/team/TeamMemberForm';
+import { Separator } from '../components/Separator';
+
+interface TeamMember {
+  name: string;
+  email: string;
+  valorantId: string;
+  rank: string;
+  role: 'Captain' | 'Main' | 'Substitute';
+  discordId: string;
+}
+
+interface TeamData {
+  teamName: string;
+  teamLogo: File | null;
+  members: TeamMember[];
+}
+
+const initialMemberState: TeamMember = {
+  name: '',
+  email: '',
+  valorantId: '',
+  rank: '',
+  role: 'Main',
+  discordId: ''
+};
+
+export function CreateTeam() {
+  const [teamData, setTeamData] = useState<TeamData>({
+    teamName: '',
+    teamLogo: null,
+    members: Array(7).fill({ ...initialMemberState })
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission
+    console.log(teamData);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#111] text-white">
+      <Navbar />
+      
+      {/* Hero Section */}
+      <div className="relative h-[40vh] bg-cover bg-center flex items-center justify-center"
+           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1542751371-adc38448a05e)' }}>
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="relative z-10 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            CREATE YOUR <span className="text-[#FF4655]">TEAM</span>
+          </h1>
+          <Separator />
+        </div>
+      </div>
+
+      {/* Form Section */}
+      <div className="max-w-6xl mx-auto px-4 py-24">
+        <form onSubmit={handleSubmit} className="space-y-16">
+          {/* Team Basic Info */}
+          <TeamBasicInfo 
+            teamData={teamData} 
+            setTeamData={setTeamData} 
+          />
+
+          {/* Team Members */}
+          <div>
+            <h2 className="text-3xl font-bold mb-12 text-center">
+              TEAM <span className="text-[#FF4655]">MEMBERS</span>
+            </h2>
+            <Separator />
+            
+            <div className="space-y-8">
+              {teamData.members.map((member, index) => (
+                <TeamMemberForm
+                  key={index}
+                  memberIndex={index}
+                  member={member}
+                  setTeamData={setTeamData}
+                  isCaptain={index === 0}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="relative px-12 py-4 bg-[#FF4655] transform skew-x-[-20deg] overflow-hidden
+                       transition-all duration-300 hover:bg-[#ff5e6b]"
+            >
+              <span className="relative z-10 block text-white font-medium text-lg tracking-wider transform skew-x-[20deg]">
+                CREATE TEAM
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <Footer />
+    </div>
+  );
+}

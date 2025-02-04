@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
 import { Landing } from "./pages/Landing";
 import { LearnMore } from "./pages/LearnMore";
+import { CreateTeam } from "./pages/CreateTeam";
+
 
 export default function App() {
   return (
@@ -18,6 +20,19 @@ export default function App() {
             path="/learn-more"
             element={
               <LearnMore />
+            }
+          />
+          <Route
+            path="/create-team"
+            element={
+              <>
+              <SignedIn>
+                <CreateTeam />
+              </SignedIn>
+              <SignedOut>
+                <SignInButton />
+              </SignedOut>
+              </>
             }
           />
         </Routes>
