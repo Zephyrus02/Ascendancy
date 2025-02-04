@@ -11,27 +11,13 @@ export default function App() {
           <Route
             path="/"
             element={
-              <>
-                <SignedOut>
-                  <Landing />
-                </SignedOut>
-                <SignedIn>
-                  <Landing />
-                </SignedIn>
-              </>
+              <Landing />
             }
           />
           <Route
             path="/learn-more"
             element={
-              <>
-                <SignedOut>
-                  <LearnMore />
-                </SignedOut>
-                <SignedIn>
-                  <LearnMore />
-                </SignedIn>
-              </>
+              <LearnMore />
             }
           />
         </Routes>
