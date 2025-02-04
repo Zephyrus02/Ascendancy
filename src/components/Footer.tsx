@@ -20,33 +20,12 @@ export function Footer() {
       <nav className="flex justify-center gap-8 mb-12">
         <a href="/" className="hover:text-gray-300 transition-colors">HOME</a>
         <a href="/learn-more" className="hover:text-gray-300 transition-colors">LEARN MORE</a>
-        <a href="#" className="hover:text-gray-300 transition-colors">BRACKETS</a>
+        <a href="/brackets" className="hover:text-gray-300 transition-colors">BRACKETS</a>
+        <a href="/profile" className="hover:text-gray-300 transition-colors">PROFILE</a>
         <a href="/create-team" className="hover:text-gray-300 transition-colors">CREATE TEAM</a>
-        <a href="#" className="hover:text-gray-300 transition-colors">ROOMS</a>
-        <a href="#" className="hover:text-gray-300 transition-colors">ADMIN SPACE</a>
+        <a href="/room" className="hover:text-gray-300 transition-colors">ROOMS</a>
+        <a href="/admin" className="hover:text-gray-300 transition-colors">ADMIN SPACE</a>
       </nav>
-
-      {/* Newsletter */}
-      <div className="flex justify-center mb-8">
-        <form onSubmit={handleSubmit} className="w-full max-w-xl px-4">
-          <div className="relative">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Subscribe to our Newsletter"
-              className="w-full bg-transparent border-b border-gray-600 py-2 px-4 text-white placeholder-gray-400 focus:outline-none focus:border-white"
-            />
-            <button
-              type="submit"
-              className="absolute right-0 top-1/2 -translate-y-1/2"
-            >
-              <span className="sr-only">Subscribe</span>
-              ✉
-            </button>
-          </div>
-        </form>
-      </div>
 
       {/* Social Links */}
       <div className="flex justify-center gap-6 mb-8">

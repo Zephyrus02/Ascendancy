@@ -56,14 +56,15 @@ export function Navbar() {
             <div className="flex items-center space-x-8 xl:space-x-12">
               <a href="/" className="text-white font-medium hover:text-red-500 transition-colors">Home</a>
               <a href="/learn-more" className="text-white/80 font-medium hover:text-white transition-colors">Learn More</a>
+              <a href="/brackets" className="text-white/80 font-medium hover:text-white transition-colors">Brackets</a>
             </div>
 
             {/* Right Navigation */}
             <div className="flex items-center">
               <div className="flex items-center space-x-8 xl:space-x-12 mr-8 xl:mr-16">
-              <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Brackets</a>
+                <a href="/profile" className="text-white/80 font-medium hover:text-white transition-colors">Profile</a>
                 <a href="/create-team" className="text-white/80 font-medium hover:text-white transition-colors">Create Team</a>
-                <a href="#" className="text-white/80 font-medium hover:text-white transition-colors">Rooms</a>
+                <a href="/rooms" className="text-white/80 font-medium hover:text-white transition-colors">Rooms</a>
               </div>
 
               {/* Maximize Icon */}
