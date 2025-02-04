@@ -4,10 +4,12 @@ import { Footer } from '../components/Footer';
 import { TeamBasicInfo } from '../components/team/TeamBasicInfo';
 import { TeamMemberForm } from '../components/team/TeamMemberForm';
 import { Separator } from '../components/Separator';
+import { createTeam } from '../services/api';
+import { useUser } from '@clerk/clerk-react'; // Add this import
+import { ClipLoader } from 'react-spinners'; // Install this package: npm install react-spinners
 
 interface TeamMember {
   name: string;
-  email: string;
   valorantId: string;
   rank: string;
   role: 'Captain' | 'Main' | 'Substitute';
@@ -16,13 +18,12 @@ interface TeamMember {
 
 interface TeamData {
   teamName: string;
-  teamLogo: File | null;
+  teamLogo: string | null;
   members: TeamMember[];
 }
 
 const initialMemberState: TeamMember = {
   name: '',
-  email: '',
   valorantId: '',
   rank: '',
   role: 'Main',
@@ -30,16 +31,87 @@ const initialMemberState: TeamMember = {
 };
 
 export function CreateTeam() {
+  const { user } = useUser();
   const [teamData, setTeamData] = useState<TeamData>({
     teamName: '',
     teamLogo: null,
     members: Array(7).fill({ ...initialMemberState })
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(teamData);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      if (!user) {
+        throw new Error('You must be logged in to create a team');
+      }
+
+      // Validate team name
+      if (!teamData.teamName.trim()) {
+        throw new Error('Team name is required');
+      }
+
+      // Validate captain
+      const captain = teamData.members[0];
+      if (!captain.name || !captain.valorantId || !captain.rank || !captain.discordId) {
+        throw new Error('Captain information is incomplete');
+      }
+
+      // Validate main players
+      const mainPlayers = teamData.members.slice(1, 5);
+      const invalidMainPlayers = mainPlayers.some(player => 
+        !player.name || !player.valorantId || !player.rank || !player.discordId
+      );
+
+      if (invalidMainPlayers) {
+        throw new Error('All main players information is required');
+      }
+
+      // Handle substitutes
+      const substitutes = teamData.members.slice(5)
+        .filter(member => member.name.trim() !== '')
+        .map(sub => {
+          if (!sub.valorantId || !sub.rank || !sub.discordId) {
+            throw new Error('Please complete all fields for substitute players or remove them');
+          }
+          return { ...sub, role: 'Substitute' };
+        });
+
+      const teamPayload = {
+        teamName: teamData.teamName,
+        teamLogo: teamData.teamLogo,
+        members: [
+          { ...captain, role: 'Captain' },
+          ...mainPlayers.map(player => ({ ...player, role: 'Main' })),
+          ...substitutes
+        ],
+        userId: user.id
+      };
+
+      console.log('Sending team payload:', teamPayload);
+
+      const response = await createTeam(teamPayload);
+      console.log('Server response:', response);
+
+      if (response.message === 'Team created successfully') {
+        setTeamData({
+          teamName: '',
+          teamLogo: null,
+          members: Array(7).fill({ ...initialMemberState })
+        });
+        alert('Team created successfully!');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setError(error instanceof Error ? error.message : 'Failed to create team');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -90,14 +162,28 @@ export function CreateTeam() {
           <div className="flex justify-center">
             <button
               type="submit"
+              disabled={isLoading}
               className="relative px-12 py-4 bg-[#FF4655] transform skew-x-[-20deg] overflow-hidden
-                       transition-all duration-300 hover:bg-[#ff5e6b]"
+                       transition-all duration-300 hover:bg-[#ff5e6b] disabled:opacity-50 min-w-[200px]"
             >
-              <span className="relative z-10 block text-white font-medium text-lg tracking-wider transform skew-x-[20deg]">
-                CREATE TEAM
+              <span className="relative z-10 block text-white font-medium text-lg tracking-wider transform skew-x-[20deg] flex items-center justify-center">
+                {isLoading ? (
+                  <>
+                    <ClipLoader size={20} color="#ffffff" className="mr-2" />
+                    CREATING...
+                  </>
+                ) : (
+                  'CREATE TEAM'
+                )}
               </span>
             </button>
           </div>
+
+          {error && (
+            <div className="text-red-500 text-center mt-4">
+              {error}
+            </div>
+          )}
         </form>
       </div>
 

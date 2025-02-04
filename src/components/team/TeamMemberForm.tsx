@@ -34,26 +34,8 @@ export function TeamMemberForm({ memberIndex, member, setTeamData, isCaptain }: 
             type="text"
             value={member.name}
             onChange={(e) => updateMember('name', e.target.value)}
-            className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4
-                     focus:outline-none focus:border-[#FF4655] focus:ring-1 focus:ring-[#FF4655]
-                     transition-colors"
+            className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4 focus:outline-none focus:border-[#FF4655]"
             placeholder="Enter player name"
-            required
-          />
-        </div>
-
-        {/* Email */}
-        <div>
-          <label className="block text-white/60 mb-2">EMAIL</label>
-          <input
-            type="email"
-            value={member.email}
-            onChange={(e) => updateMember('email', e.target.value)}
-            className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4
-                     focus:outline-none focus:border-[#FF4655] focus:ring-1 focus:ring-[#FF4655]
-                     transition-colors"
-            placeholder="Enter email address"
-            required
           />
         </div>
 
@@ -64,11 +46,8 @@ export function TeamMemberForm({ memberIndex, member, setTeamData, isCaptain }: 
             type="text"
             value={member.valorantId}
             onChange={(e) => updateMember('valorantId', e.target.value)}
-            className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4
-                     focus:outline-none focus:border-[#FF4655] focus:ring-1 focus:ring-[#FF4655]
-                     transition-colors"
-            placeholder="Example: Player#NA1"
-            required
+            className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4 focus:outline-none focus:border-[#FF4655]"
+            placeholder="Enter Valorant ID"
           />
         </div>
 
@@ -78,13 +57,10 @@ export function TeamMemberForm({ memberIndex, member, setTeamData, isCaptain }: 
           <select
             value={member.rank}
             onChange={(e) => updateMember('rank', e.target.value)}
-            className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4
-                     focus:outline-none focus:border-[#FF4655] focus:ring-1 focus:ring-[#FF4655]
-                     transition-colors"
-            required
+            className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4 focus:outline-none focus:border-[#FF4655]"
           >
             <option value="">Select Rank</option>
-            {ranks.map(rank => (
+            {ranks.map((rank) => (
               <option key={rank} value={rank}>{rank}</option>
             ))}
           </select>
@@ -97,11 +73,8 @@ export function TeamMemberForm({ memberIndex, member, setTeamData, isCaptain }: 
             type="text"
             value={member.discordId}
             onChange={(e) => updateMember('discordId', e.target.value)}
-            className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4
-                     focus:outline-none focus:border-[#FF4655] focus:ring-1 focus:ring-[#FF4655]
-                     transition-colors"
-            placeholder="Example: username#0000"
-            required
+            className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4 focus:outline-none focus:border-[#FF4655]"
+            placeholder="Enter Discord ID"
           />
         </div>
       </div>
