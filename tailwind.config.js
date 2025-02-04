@@ -23,11 +23,6 @@ export default {
       }
     },
   },
-  variants: {
-    extend: {
-      // ...existing variants
-    },
-  },
   plugins: [
     require('tailwind-scrollbar-hide')
   ],
