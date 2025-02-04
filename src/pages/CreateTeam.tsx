@@ -54,7 +54,6 @@ export function CreateTeam() {
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
             CREATE YOUR <span className="text-[#FF4655]">TEAM</span>
           </h1>
-          <Separator />
         </div>
       </div>
 

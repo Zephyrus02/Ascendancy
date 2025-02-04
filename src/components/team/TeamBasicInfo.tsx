@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { UploadCloud, X } from 'lucide-react';
+import { Separator } from '../Separator';
 
 interface Props {
   teamData: any;
@@ -28,6 +29,7 @@ export function TeamBasicInfo({ teamData, setTeamData }: Props) {
       <h2 className="text-3xl font-bold mb-12 text-center">
         BASIC <span className="text-[#FF4655]">INFORMATION</span>
       </h2>
+      <Separator />
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Team Name */}

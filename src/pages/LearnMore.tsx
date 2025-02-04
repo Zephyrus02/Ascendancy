@@ -4,6 +4,7 @@ import { PrizePool } from '../components/learn/PrizePool';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Separator } from '../components/Separator';
+import { FAQSection } from '../components/learn/FAQSection';
 
 export function LearnMore() {
   return (
@@ -47,6 +48,15 @@ export function LearnMore() {
           </h2>
           <Separator />
           <PrizePool />
+        </section>
+
+        {/* FAQ Section */}
+        <section>
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+            FREQUENTLY ASKED <span className="text-[#FF4655]">QUESTIONS</span>
+          </h2>
+          <Separator />
+          <FAQSection />
         </section>
       </div>
         <Footer />
