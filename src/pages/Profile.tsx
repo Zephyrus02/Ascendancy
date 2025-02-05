@@ -47,14 +47,17 @@ function EditModal({ team, onClose, onSave }: EditModalProps) {
     ...team,
     members: [...team.members, ...Array(7 - team.members.length).fill(initialMemberState)]
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     try {
-      // Filter out empty substitute players
+
       const validMembers = editedTeam.members.filter((member, index) => {
-        if (index < 5) return true; // Keep all main players
-        return member.name.trim() !== ''; // Keep only filled substitute players
+        if (index < 5) return true;
+        return member.name.trim() !== '';
       });
 
       const teamPayload = {
@@ -71,14 +74,20 @@ function EditModal({ team, onClose, onSave }: EditModalProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update team');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update team');
       }
 
       const updatedTeam = await response.json();
+      console.log('Updated team:', updatedTeam); // Debug log
+      
       onSave(updatedTeam);
       onClose();
     } catch (error) {
-      console.error('Error updating team:', error);
+      console.error('Update error:', error);
+      alert(error instanceof Error ? error.message : 'Failed to update team');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -121,9 +130,17 @@ function EditModal({ team, onClose, onSave }: EditModalProps) {
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-[#FF4655] hover:bg-[#ff5e6b] transition-colors rounded"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-[#FF4655] hover:bg-[#ff5e6b] transition-colors rounded disabled:opacity-50"
             >
-              Save Changes
+              {isSubmitting ? (
+                <div className="flex items-center justify-center">
+                  <ClipLoader size={20} color="#ffffff" className="mr-2" />
+                  Saving...
+                </div>
+              ) : (
+                'Save Changes'
+              )}
             </button>
           </div>
         </form>
@@ -190,14 +207,12 @@ export function Profile() {
       try {
         console.log('Fetching team for user:', user.id); // Debug log
         const response = await fetch(`${import.meta.env.VITE_API_URL}/teams/user/${user.id}`);
-        console.log('Response:', response.status); // Debug log
         
         if (!response.ok) {
           throw new Error("You haven't created a team yet. Create your team to participate in tournaments.");
         }
         
         const data = await response.json();
-        console.log('Team data:', data); // Debug log
         setTeam(data);
       } catch (err) {
         console.error('Error:', err); // Debug log
@@ -209,8 +224,6 @@ export function Profile() {
 
     fetchTeam();
   }, [user]);
-
-  console.log('Render state:', { isLoading, error, team }); // Debug log
 
   const handleEditClick = () => {
     setIsEditing(true);

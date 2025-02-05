@@ -158,7 +158,8 @@ export function CreateTeam() {
           ...mainPlayers.map(player => ({ ...player, role: 'Main' })),
           ...substitutes
         ],
-        userId: user.id
+        userId: user.id,
+        username: user.username // Add username
       };
 
       console.log('Sending team payload:', teamPayload);
@@ -221,6 +222,7 @@ export function CreateTeam() {
                   member={member}
                   setTeamData={setTeamData}
                   isCaptain={index === 0}
+                  isRequired={index < 5}
                 />
               ))}
             </div>

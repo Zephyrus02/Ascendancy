@@ -1,11 +1,31 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, SignInButton, useUser } from "@clerk/clerk-react";
+import { useEffect } from "react";
 import { Landing } from "./pages/Landing";
 import { LearnMore } from "./pages/LearnMore";
 import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
+import { createUserProfile } from "./services/api";
 
 export default function App() {
+  const { user, isLoaded } = useUser();
+
+  useEffect(() => {
+    const createUser = async () => {
+      if (user?.id && user?.username) {
+        try {
+          await createUserProfile(user.id, user.username);
+        } catch (error) {
+          console.error('Error creating user profile:', error);
+        }
+      }
+    };
+
+    if (isLoaded && user) {
+      createUser();
+    }
+  }, [user, isLoaded]);
+
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-[#111] text-white">

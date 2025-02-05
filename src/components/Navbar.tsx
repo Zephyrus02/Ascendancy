@@ -102,11 +102,8 @@ export function Navbar() {
             </div>
           </div>
           <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2">
-            <div className="relative">
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-36 bg-[#1a1a1a] -z-10"></div>
-              <div className="w-24 h-24 bg-grey-dark flex items-center justify-center">
-                <img src="https://i.postimg.cc/Pf93Hmmx/icon.png" alt="logo" className="object-contain" />
-              </div>
+            <div className="w-24 h-24 bg-grey-dark flex items-center justify-center">
+              <img src="https://i.postimg.cc/Pf93Hmmx/icon.png" alt="logo" className="object-contain" />
             </div>
           </div>
         </div>
