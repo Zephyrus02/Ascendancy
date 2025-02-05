@@ -3,9 +3,10 @@ interface Props {
   member: any;
   setTeamData: (data: any) => void;
   isCaptain: boolean;
+  isRequired: boolean;  // Add this line
 }
 
-export function TeamMemberForm({ memberIndex, member, setTeamData, isCaptain }: Props) {
+export function TeamMemberForm({ memberIndex, member, setTeamData, isCaptain, isRequired }: Props) {
   const updateMember = (field: string, value: string) => {
     setTeamData((prev: any) => ({
       ...prev,

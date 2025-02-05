@@ -33,18 +33,40 @@ interface EditModalProps {
   onSave: (updatedTeam: Team) => void;
 }
 
+const initialMemberState: TeamMember = {
+  name: '',
+  valorantId: '',
+  rank: '',
+  role: 'Substitute',
+  discordId: ''
+};
+
 function EditModal({ team, onClose, onSave }: EditModalProps) {
-  const [editedTeam, setEditedTeam] = useState(team);
+  const [editedTeam, setEditedTeam] = useState({
+    ...team,
+    members: [...team.members, ...Array(7 - team.members.length).fill(initialMemberState)]
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Filter out empty substitute players
+      const validMembers = editedTeam.members.filter((member, index) => {
+        if (index < 5) return true; // Keep all main players
+        return member.name.trim() !== ''; // Keep only filled substitute players
+      });
+
+      const teamPayload = {
+        ...editedTeam,
+        members: validMembers
+      };
+
       const response = await fetch(`${import.meta.env.VITE_API_URL}/teams/${team._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(editedTeam)
+        body: JSON.stringify(teamPayload)
       });
 
       if (!response.ok) {
@@ -60,8 +82,8 @@ function EditModal({ team, onClose, onSave }: EditModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-[#1a1a1a] p-8 rounded-lg max-w-4xl w-full mx-4 my-8">
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+      <div className="bg-[#1a1a1a] p-8 rounded-lg max-w-4xl w-full mx-4 my-8 max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Edit Team</h2>
           <button onClick={onClose} className="text-white/60 hover:text-white">
@@ -69,10 +91,10 @@ function EditModal({ team, onClose, onSave }: EditModalProps) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-8 overflow-y-auto pr-4 flex-1 custom-scrollbar">
           <TeamBasicInfo 
-            teamData={editedTeam} 
-            setTeamData={setEditedTeam} 
+            teamData={editedTeam}
+            setTeamData={setEditedTeam}
           />
 
           <div className="space-y-6">
@@ -83,6 +105,7 @@ function EditModal({ team, onClose, onSave }: EditModalProps) {
                 member={member}
                 setTeamData={setEditedTeam}
                 isCaptain={index === 0}
+                isRequired={index < 5}
               />
             ))}
           </div>
