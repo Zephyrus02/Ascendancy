@@ -5,6 +5,7 @@ import { Landing } from "./pages/Landing";
 import { LearnMore } from "./pages/LearnMore";
 import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
+import { ComingSoon } from "./pages/ComingSoon";
 import { createUserProfile } from "./services/api";
 
 export default function App() {
@@ -67,6 +68,24 @@ export default function App() {
                 </SignedOut>
               </>
 
+            }
+          />
+          <Route
+            path="/brackets"
+            element={
+              <ComingSoon />
+            }
+          />
+          <Route
+            path="/rooms"
+            element={
+              <ComingSoon />
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ComingSoon />
             }
           />
         </Routes>

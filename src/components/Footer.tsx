@@ -38,7 +38,7 @@ export function Footer() {
         >
           CREATE TEAM
         </a>
-        <a href="/room" className="hover:text-gray-300 transition-colors">ROOMS</a>
+        <a href="/rooms" className="hover:text-gray-300 transition-colors">ROOMS</a>
         <a href="/admin" className="hover:text-gray-300 transition-colors">ADMIN SPACE</a>
       </nav>
 
