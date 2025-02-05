@@ -10,6 +10,7 @@ import { TeamBasicInfo } from '../components/team/TeamBasicInfo';
 import { TeamMemberForm } from '../components/team/TeamMemberForm';
 import { TeamHero } from '../components/team/TeamHero';
 import { ClipLoader } from 'react-spinners';
+import { createOrder, verifyPayment, deleteTeam } from '../services/api';
 
 interface Team {
   _id: string;
@@ -155,6 +156,35 @@ function PaymentModal({ onClose, onSuccess, amount = 250 }: {
   onSuccess: () => void;
   amount?: number;
 }) {
+  const { user } = useUser();
+
+  const handlePayment = async () => {
+    try {
+      if (!user?.id || !user?.username) return;
+
+      const order = await createOrder(user.id, user.username);
+      
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Ascendancy",
+        description: "Team Verification Payment",
+        order_id: order.id,
+        handler: async function(response: any) {
+          await verifyPayment(order.id, response.razorpay_payment_id);
+          onSuccess();
+        }
+      };
+
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Payment failed. Please try again.');
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
       <div className="bg-[#1a1a1a] p-8 rounded-lg max-w-md w-full mx-4">
@@ -173,7 +203,7 @@ function PaymentModal({ onClose, onSuccess, amount = 250 }: {
 
           <div className="space-y-4">
             <button 
-              onClick={onSuccess}
+              onClick={handlePayment}
               className="w-full py-3 bg-[#FF4655] hover:bg-[#ff5e6b] transition-colors font-medium"
             >
               Pay with RazorPay
@@ -254,6 +284,19 @@ export function Profile() {
     }
   };
 
+  const handleDeleteTeam = async () => {
+    if (!team?._id) return;
+    
+    if (window.confirm('Are you sure you want to delete your team? This action cannot be undone.')) {
+      try {
+        await deleteTeam(team._id);
+        setTeam(null);
+      } catch (error) {
+        alert('Failed to delete team');
+      }
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#111] text-white">
@@ -321,22 +364,45 @@ export function Profile() {
                 teamLogo={team.teamLogo}
                 verified={team.verified}
               />
-              <div className="flex items-center space-x-4">
-                {!team.verified && (
+              {!team.verified && (
+                <div className="flex items-center gap-4">
                   <button
                     onClick={() => setShowPayment(true)}
-                    className="px-6 py-2 bg-green-600 hover:bg-green-700 transition-colors rounded-full"
+                    className="relative px-8 py-3 bg-[#FF4655] transform skew-x-[-20deg] 
+                              overflow-hidden transition-all duration-300 
+                              hover:bg-[#ff5e6b] hover:scale-105"
                   >
-                    Verify Team
+                    <span className="relative z-20 block text-white font-medium 
+                                  tracking-wider transform skew-x-[20deg]">
+                      VERIFY TEAM
+                    </span>
                   </button>
-                )}
-                <button
-                  onClick={handleEditClick}
-                  className="p-2 hover:bg-[#FF4655]/10 rounded-full transition-colors"
-                >
-                  <Edit2 className="w-6 h-6 text-[#FF4655]" />
-                </button>
-              </div>
+                  
+                  <button
+                    onClick={handleEditClick}
+                    className="relative px-8 py-3 border-2 border-[#FF4655] transform skew-x-[-20deg]
+                              overflow-hidden transition-all duration-300
+                              hover:bg-[#FF4655]/10"
+                  >
+                    <span className="relative z-20 block text-white font-medium 
+                                  tracking-wider transform skew-x-[20deg]">
+                      EDIT TEAM
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={handleDeleteTeam}
+                    className="relative px-8 py-3 border-2 border-red-600 transform skew-x-[-20deg]
+                              overflow-hidden transition-all duration-300
+                              hover:bg-red-600/10 text-red-600 hover:text-red-500"
+                  >
+                    <span className="relative z-20 block font-medium 
+                                  tracking-wider transform skew-x-[20deg]">
+                      DELETE TEAM
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
             <StatCards 
               membersCount={team.members.length} 

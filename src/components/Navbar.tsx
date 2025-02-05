@@ -103,7 +103,9 @@ export function Navbar() {
           </div>
           <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2">
             <div className="w-24 h-24 bg-grey-dark flex items-center justify-center">
-              <img src="https://i.postimg.cc/Pf93Hmmx/icon.png" alt="logo" className="object-contain" />
+              <a href="/">
+                <img src="https://i.postimg.cc/Pf93Hmmx/icon.png" alt="logo" className="object-contain" />
+              </a>
             </div>
           </div>
         </div>
