@@ -7,7 +7,10 @@ export function Footer() {
   const { isSignedIn } = useUser();
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('root')?.scrollTo({ 
+      top: 0, 
+      behavior: 'smooth' 
+    });
   };
 
   const handleAuthClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -53,15 +56,32 @@ export function Footer() {
         <a href="https://discord.gg/D3bA9bAaHV" className="hover:text-gray-300 transition-colors">
           <FaDiscord size={20} />
         </a>
+        <button
+          onClick={scrollToTop}
+          className="absolute right-8 bottom-8 p-2 bg-[#FF4655] rounded-full 
+                    hover:bg-[#ff5e6b] transition-colors"
+        >
+          <ArrowUp className="w-6 h-6" />
+        </button>
       </div>
 
-      {/* Scroll to top button */}
-      <button
-        onClick={scrollToTop}
-        className="absolute right-0 top-0 bg-[#ff3333] p-4 hover:bg-[#cc2929] transition-colors"
-      >
-        <ArrowUp size={24} />
-      </button>
+      {/* Copyright and Legal Links */}
+      <div className="mt-12 pt-8 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-white/60 text-sm mb-4 md:mb-0">
+            © 2025 Ascendancy. All rights reserved.
+          </p>
+          <div className="flex gap-6 text-sm text-white/60">
+            <a href="/tnc" className="hover:text-white transition-colors">
+              Terms & Conditions
+            </a>
+            <a href="/refund" className="hover:text-white transition-colors">
+              Cancellation & Refund Policy
+            </a>
+          </div>
+        </div>
+      </div>
+      
     </footer>
   );
 }

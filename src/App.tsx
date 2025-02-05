@@ -6,6 +6,8 @@ import { LearnMore } from "./pages/LearnMore";
 import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
 import { ComingSoon } from "./pages/ComingSoon";
+import { TNC } from "./pages/TNC";
+import { Refund } from "./pages/Refund";
 import { createUserProfile } from "./services/api";
 
 export default function App() {
@@ -84,6 +86,24 @@ export default function App() {
           />
           <Route
             path="/admin"
+            element={
+              <ComingSoon />
+            }
+          />
+          <Route
+            path="/tnc"
+            element={
+              <TNC />
+            }
+          />
+          <Route
+            path="/refund"
+            element={
+              <Refund />
+            }
+          />
+          <Route
+            path="/privacy"
             element={
               <ComingSoon />
             }
