@@ -80,7 +80,6 @@ function EditModal({ team, onClose, onSave }: EditModalProps) {
       }
 
       const updatedTeam = await response.json();
-      console.log('Updated team:', updatedTeam); // Debug log
       
       onSave(updatedTeam);
       onClose();
@@ -235,7 +234,6 @@ export function Profile() {
       if (!user?.id) return;
       
       try {
-        console.log('Fetching team for user:', user.id); // Debug log
         const response = await fetch(`${import.meta.env.VITE_API_URL}/teams/user/${user.id}`);
         
         if (!response.ok) {

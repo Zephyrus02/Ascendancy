@@ -25,50 +25,48 @@ const matches: Match[] = [
     id: 1,
     status: 'live',
     team1: {
-      name: 'SENTINELS',
-      logo: 'https://i.postimg.cc/PfYhSVTR/sentinels.png',
-      score: 7
+      name: 'TBD',
+      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-1.png',  
+      score: 0
     },
     team2: {
-      name: 'CLOUD9',
-      logo: 'https://i.postimg.cc/6p4YxCZn/cloud9.png', 
-      score: 5
+      name: 'TBD',
+      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-2.png',
+      score: 0
     },
-    tournament: 'VCT Americas',
-    time: 'LIVE',
-    date: 'Map 2'
+    tournament: 'ASCENDANCY TOURNAMENT',
+    time: 'TBD',
+    date: 'TBD'
   },
   {
     id: 2,
     status: 'upcoming',
     team1: {
-      name: 'FNATIC',
-      logo: 'https://i.postimg.cc/T1Ld0VkV/fnatic.png'
+      name: 'TBD',
+      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-3.png'
     },
     team2: {
-      name: 'LOUD',
-      logo: 'https://i.postimg.cc/VvXR4Kcy/loud.png'
+      name: 'TBD',
+      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-4.png'
     },
-    tournament: 'VCT LOCK//IN',
-    time: '18:00',
-    date: 'March 20'
+    tournament: 'ASCENDANCY TOURNAMENT',
+    time: 'TBD', 
+    date: 'TBD'
   },
   {
     id: 3,
-    status: 'completed',
+    status: 'upcoming',
     team1: {
-      name: '100 THIEVES',
-      logo: 'https://liquipedia.net/commons/images/1/10/100_Thieves_full_lightmode.png',
-      score: 13
+      name: 'TBD',
+      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-5.png'
     },
     team2: {
-      name: 'NRG',
-      logo: 'https://liquipedia.net/commons/images/0/00/NRG_full_lightmode.png',
-      score: 11
+      name: 'TBD',
+      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-6.png'
     },
-    tournament: 'VCT Americas',
-    time: 'FINAL',
-    date: 'Map 3'
+    tournament: 'ASCENDANCY TOURNAMENT',
+    time: 'TBD',
+    date: 'TBD'
   }
 ];
 
@@ -127,7 +125,11 @@ export function Trending() {
                 <div className="flex items-center space-x-8 flex-1">
                   {/* Team 1 */}
                   <div className="flex items-center space-x-4 flex-1">
-                    <img src={match.team1.logo} alt={match.team1.name} className="w-12 h-12 object-contain" />
+                    <img 
+                      src={match.team1.logo} 
+                      alt={match.team1.name} 
+                      className="w-20 h-20 object-contain" // Increased from w-12 h-12
+                    />
                     <span className="text-white font-medium">{match.team1.name}</span>
                     {match.team1.score !== undefined && (
                       <span className="text-2xl font-bold text-white">{match.team1.score}</span>
@@ -143,7 +145,11 @@ export function Trending() {
                       <span className="text-2xl font-bold text-white">{match.team2.score}</span>
                     )}
                     <span className="text-white font-medium">{match.team2.name}</span>
-                    <img src={match.team2.logo} alt={match.team2.name} className="w-12 h-12 object-contain" />
+                    <img 
+                      src={match.team2.logo} 
+                      alt={match.team2.name} 
+                      className="w-20 h-20 object-contain" // Increased from w-12 h-12
+                    />
                   </div>
                 </div>
               </div>
