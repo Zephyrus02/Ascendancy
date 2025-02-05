@@ -28,7 +28,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#111] text-white">
+      <div className="min-h-screen bg-[#111] text-white w-full max-w-[100vw] overflow-x-hidden">
         <Routes>
           <Route
             path="/"

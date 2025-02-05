@@ -26,12 +26,12 @@ const matches: Match[] = [
     status: 'live',
     team1: {
       name: 'SENTINELS',
-      logo: 'https://liquipedia.net/commons/images/3/37/Sentinels_full_lightmode.png',
+      logo: 'https://i.postimg.cc/PfYhSVTR/sentinels.png',
       score: 7
     },
     team2: {
       name: 'CLOUD9',
-      logo: 'https://liquipedia.net/commons/images/8/8f/Cloud9_full_lightmode.png',
+      logo: 'https://i.postimg.cc/6p4YxCZn/cloud9.png', 
       score: 5
     },
     tournament: 'VCT Americas',
@@ -43,11 +43,11 @@ const matches: Match[] = [
     status: 'upcoming',
     team1: {
       name: 'FNATIC',
-      logo: 'https://liquipedia.net/commons/images/f/fd/Fnatic_full_lightmode.png'
+      logo: 'https://i.postimg.cc/T1Ld0VkV/fnatic.png'
     },
     team2: {
       name: 'LOUD',
-      logo: 'https://liquipedia.net/commons/images/f/f1/LOUD_full_lightmode.png'
+      logo: 'https://i.postimg.cc/VvXR4Kcy/loud.png'
     },
     tournament: 'VCT LOCK//IN',
     time: '18:00',

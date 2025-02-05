@@ -5,7 +5,7 @@ import { Footer } from '../components/Footer';
 import { TeamHeader } from '../components/team/TeamHeader';
 import { StatCards } from '../components/team/StatCards';
 import { TeamMembers } from '../components/team/TeamMembers';
-import { Edit2, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { TeamBasicInfo } from '../components/team/TeamBasicInfo';
 import { TeamMemberForm } from '../components/team/TeamMemberForm';
 import { TeamHero } from '../components/team/TeamHero';
