@@ -48,7 +48,9 @@ export function Navbar() {
         <div className="flex items-center justify-between h-20 lg:h-24">
           {/* Website Title */}
           <div className="text-lg lg:text-xl font-bold text-white">
-            ASCENDANCY
+            <a href="/">
+              ASCENDANCY
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -99,8 +101,6 @@ export function Navbar() {
               </div>
             </div>
           </div>
-
-          {/* Center Logo with Extended Background - Hidden on mobile */}
           <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2">
             <div className="relative">
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-36 bg-[#1a1a1a] -z-10"></div>

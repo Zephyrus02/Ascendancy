@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { Mail, User, MessageSquare, Phone, MapPin } from 'lucide-react';
+import { Mail, User, MessageSquare, Phone} from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { Separator } from './Separator';
 
@@ -85,16 +85,6 @@ export function Contact() {
                 <div>
                   <p className="text-white/40">Email</p>
                   <p className="text-white">savairamsaj@gmail.com | atharvchordiya04@gmail.com</p>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-[#1a1a1a] flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-[#FF4655]" />
-                </div>
-                <div>
-                  <p className="text-white/40">Address</p>
-                  <p className="text-white">VIT Vellore, Vellore, Tamil Nadu</p>
                 </div>
               </div>
             </div>
