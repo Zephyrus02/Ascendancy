@@ -1,10 +1,20 @@
 import { Youtube, Instagram, ArrowUp } from 'lucide-react';
 import { FaDiscord } from 'react-icons/fa6';
+import { useClerk, useUser } from '@clerk/clerk-react';
 
 export function Footer() {
+  const { openSignIn } = useClerk();
+  const { isSignedIn } = useUser();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleAuthClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isSignedIn) {
+      e.preventDefault();
+      openSignIn();
+    }
   };
 
   return (
@@ -14,8 +24,20 @@ export function Footer() {
         <a href="/" className="hover:text-gray-300 transition-colors">HOME</a>
         <a href="/learn-more" className="hover:text-gray-300 transition-colors">LEARN MORE</a>
         <a href="/brackets" className="hover:text-gray-300 transition-colors">BRACKETS</a>
-        <a href="/profile" className="hover:text-gray-300 transition-colors">PROFILE</a>
-        <a href="/create-team" className="hover:text-gray-300 transition-colors">CREATE TEAM</a>
+        <a 
+          href="/profile" 
+          onClick={handleAuthClick}
+          className="hover:text-gray-300 transition-colors"
+        >
+          PROFILE
+        </a>
+        <a 
+          href="/create-team" 
+          onClick={handleAuthClick}
+          className="hover:text-gray-300 transition-colors"
+        >
+          CREATE TEAM
+        </a>
         <a href="/room" className="hover:text-gray-300 transition-colors">ROOMS</a>
         <a href="/admin" className="hover:text-gray-300 transition-colors">ADMIN SPACE</a>
       </nav>

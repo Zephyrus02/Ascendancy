@@ -9,6 +9,7 @@ import { Edit2, X } from 'lucide-react';
 import { TeamBasicInfo } from '../components/team/TeamBasicInfo';
 import { TeamMemberForm } from '../components/team/TeamMemberForm';
 import { TeamHero } from '../components/team/TeamHero';
+import { ClipLoader } from 'react-spinners';
 
 interface Team {
   _id: string;
@@ -239,6 +240,43 @@ export function Profile() {
       console.error('Error verifying team:', error);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#111] text-white">
+        <Navbar />
+        <TeamHero />
+        <div className="flex justify-center items-center h-[60vh]">
+          <ClipLoader color="#FF4655" size={40} />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!team) {
+    return (
+      <div className="min-h-screen bg-[#111] text-white">
+        <Navbar />
+        <TeamHero />
+        <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
+          <h2 className="text-2xl font-bold mb-4 text-center">
+            No Team Found
+          </h2>
+          <p className="text-white/60 mb-8 text-center max-w-md">
+            Create your team to participate in tournaments and manage your roster.
+          </p>
+          <a 
+            href="/create-team" 
+            className="px-8 py-3 bg-[#FF4655] hover:bg-[#ff5e6b] transition-colors"
+          >
+            Create Team
+          </a>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#111] text-white">

@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser, SignInButton } from '@clerk/clerk-react';
 
 const slides = [
   {
@@ -16,6 +18,8 @@ const slides = [
 ];
 
 export function HeroCarousel() {
+  const { user, isSignedIn } = useUser();
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -25,6 +29,12 @@ export function HeroCarousel() {
 
     return () => clearInterval(timer);
   }, []);
+
+  const handlePlayClick = () => {
+    if (isSignedIn) {
+      navigate('/profile');
+    }
+  };
 
   return (
     <div className="relative h-[250px] sm:h-[300px] md:h-[400px] overflow-hidden">
@@ -43,34 +53,79 @@ export function HeroCarousel() {
               <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white tracking-wider text-center">
                 {slide.title}
               </h1>
-              <div className="relative group">
-                <button 
-                  className="relative px-12 py-4 bg-[#FF4655] transform skew-x-[-20deg] 
-                           overflow-hidden transition-all duration-300 
-                           hover:bg-[#ff5e6b] hover:scale-105"
-                >
-                  <span 
-                    className="relative z-20 block text-white font-medium text-lg 
-                             tracking-wider transform skew-x-[20deg]"
+              <div className="flex items-center gap-4">
+                {isSignedIn ? (
+                  <button 
+                    onClick={handlePlayClick}
+                    className="relative px-12 py-4 bg-[#FF4655] transform skew-x-[-20deg] 
+                             overflow-hidden transition-all duration-300 
+                             hover:bg-[#ff5e6b] hover:scale-105"
                   >
-                    PLAY NOW
+                    <span 
+                      className="relative z-20 block text-white font-medium text-lg 
+                               tracking-wider transform skew-x-[20deg]"
+                    >
+                      PLAY NOW
+                    </span>
+                    
+                    {/* Shine effect */}
+                    <div 
+                      className="absolute inset-0 z-10 w-full h-full 
+                               bg-gradient-to-r from-transparent via-white/20 to-transparent
+                               skew-x-[-20deg] animate-shine"
+                    />
+                    
+                    {/* Hover gradient */}
+                    <div 
+                      className="absolute inset-0 z-0 w-full h-full opacity-0
+                               bg-gradient-to-r from-[#ff5e6b] via-[#ff8b94] to-[#ff5e6b]
+                               group-hover:opacity-100 -translate-x-full 
+                               group-hover:translate-x-0 transition-all duration-500"
+                    />
+                  </button>
+                ) : (
+                  <SignInButton mode="modal">
+                    <button 
+                      className="relative px-12 py-4 bg-[#FF4655] transform skew-x-[-20deg] 
+                               overflow-hidden transition-all duration-300 
+                               hover:bg-[#ff5e6b] hover:scale-105"
+                    >
+                      <span 
+                        className="relative z-20 block text-white font-medium text-lg 
+                                 tracking-wider transform skew-x-[20deg]"
+                      >
+                        PLAY NOW
+                      </span>
+                      
+                      {/* Shine effect */}
+                      <div 
+                        className="absolute inset-0 z-10 w-full h-full 
+                                 bg-gradient-to-r from-transparent via-white/20 to-transparent
+                                 skew-x-[-20deg] animate-shine"
+                      />
+                      
+                      {/* Hover gradient */}
+                      <div 
+                        className="absolute inset-0 z-0 w-full h-full opacity-0
+                                 bg-gradient-to-r from-[#ff5e6b] via-[#ff8b94] to-[#ff5e6b]
+                                 group-hover:opacity-100 -translate-x-full 
+                                 group-hover:translate-x-0 transition-all duration-500"
+                      />
+                    </button>
+                  </SignInButton>
+                )}
+
+                <a 
+                  href="/learn-more"
+                  className="relative px-12 py-4 bg-transparent border-2 border-white transform skew-x-[-20deg] 
+                            overflow-hidden transition-all duration-300 
+                            hover:border-[#FF4655] hover:scale-105"
+                >
+                  <span className="relative z-20 block text-white font-medium text-lg 
+                                  tracking-wider transform skew-x-[20deg]">
+                    LEARN MORE
                   </span>
-                  
-                  {/* Shine effect */}
-                  <div 
-                    className="absolute inset-0 z-10 w-full h-full 
-                             bg-gradient-to-r from-transparent via-white/20 to-transparent
-                             skew-x-[-20deg] animate-shine"
-                  />
-                  
-                  {/* Hover gradient */}
-                  <div 
-                    className="absolute inset-0 z-0 w-full h-full opacity-0
-                             bg-gradient-to-r from-[#ff5e6b] via-[#ff8b94] to-[#ff5e6b]
-                             group-hover:opacity-100 -translate-x-full 
-                             group-hover:translate-x-0 transition-all duration-500"
-                  />
-                </button>
+                </a>
               </div>
             </div>
           </div>

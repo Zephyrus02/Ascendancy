@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import { Youtube, Instagram, Menu, X } from 'lucide-react';
 import { FaDiscord } from "react-icons/fa6";
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
+import { SignedIn, SignedOut, SignInButton, UserButton, useClerk, useUser } from '@clerk/clerk-react';
 
 export function Navbar() {
+  const { openSignIn } = useClerk();
+  const { isSignedIn } = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleAuthClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isSignedIn) {
+      e.preventDefault();
+      openSignIn();
+    }
+  };
 
   return (
     <nav className="relative bg-[#111]/90 border-b border-gray-800">
@@ -62,8 +71,20 @@ export function Navbar() {
             {/* Right Navigation */}
             <div className="flex items-center">
               <div className="flex items-center space-x-8 xl:space-x-12 mr-8 xl:mr-16">
-                <a href="/profile" className="text-white/80 font-medium hover:text-white transition-colors">Profile</a>
-                <a href="/create-team" className="text-white/80 font-medium hover:text-white transition-colors">Create Team</a>
+                <a 
+                  href="/profile" 
+                  onClick={handleAuthClick}
+                  className="text-white/80 font-medium hover:text-white transition-colors"
+                >
+                  Profile
+                </a>
+                <a 
+                  href="/create-team" 
+                  onClick={handleAuthClick}
+                  className="text-white/80 font-medium hover:text-white transition-colors"
+                >
+                  Create Team
+                </a>
                 <a href="/rooms" className="text-white/80 font-medium hover:text-white transition-colors">Rooms</a>
               </div>
 
@@ -93,11 +114,23 @@ export function Navbar() {
         {/* Mobile Menu */}
         <div className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
           <div className="py-4 space-y-4 border-t border-gray-800">
-            <a href="#" className="block text-white font-medium hover:text-red-500 transition-colors">Home</a>
-            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">Brackets</a>
-            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">Create Team</a>
-            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">Learn More</a>
-            <a href="#" className="block text-white/80 font-medium hover:text-white transition-colors">SignUp</a>
+            <a href="/" className="block text-white font-medium hover:text-red-500 transition-colors">Home</a>
+            <a href="/brackets" className="block text-white/80 font-medium hover:text-white transition-colors">Brackets</a>
+            <a 
+              href="/create-team" 
+              onClick={handleAuthClick}
+              className="block text-white/80 font-medium hover:text-white transition-colors"
+            >
+              Create Team
+            </a>
+            <a href="/learn-more" className="block text-white/80 font-medium hover:text-white transition-colors">Learn More</a>
+            <a 
+              href="/profile"
+              onClick={handleAuthClick} 
+              className="block text-white/80 font-medium hover:text-white transition-colors"
+            >
+              Profile
+            </a>
           </div>
         </div>
       </div>
