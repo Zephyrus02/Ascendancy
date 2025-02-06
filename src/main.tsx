@@ -6,7 +6,7 @@ import { ClerkProvider } from '@clerk/clerk-react'
 import { init } from '@emailjs/browser';
 
 // Import your Publishable Key
-const PUBLISHABLE_KEY = import.meta.env.VITE_PUBLIC_CLERK_FRONTEND_API
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
 if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key")
