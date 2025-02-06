@@ -8,14 +8,15 @@ import { Brackets } from "./pages/Brackets";
 import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
 import { ComingSoon } from "./pages/ComingSoon";
-import {Admin} from "./pages/Admin";
-import { ManageTeams } from "./pages/Admin/ManageTeams";
+import {Admin} from "./pages/admin";
+import { ManageTeams } from "./pages/admin/ManageTeams";
 import { TNC } from "./pages/TNC";
 import { Refund } from "./pages/Refund";
 import { Privacy } from "./pages/Privacy";
 import { ContactPage } from "./pages/ContactPage";
 import { Shipping } from "./pages/Shipping";
 import { createUserProfile } from "./services/api";
+import { Schedule } from "./pages/admin/Schedule";
 
 export default function App() {
   const { user, isLoaded } = useUser();
@@ -119,6 +120,21 @@ export default function App() {
                   <SignInButton/>
                 </SignedOut>
               </>
+            }
+          />
+          <Route
+            path="/admin/schedule"
+            element={
+              <>
+              <SignedIn>
+                <AdminRoute>
+                  <Schedule />
+                </AdminRoute>
+              </SignedIn>
+              <SignedOut>
+              <SignInButton/>
+            </SignedOut>
+            </>
             }
           />
           <Route
