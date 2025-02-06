@@ -8,6 +8,7 @@ import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
 import { ComingSoon } from "./pages/ComingSoon";
 import {Admin} from "./pages/Admin";
+import { ManageTeams } from "./pages/Admin/ManageTeams";
 import { TNC } from "./pages/TNC";
 import { Refund } from "./pages/Refund";
 import { Privacy } from "./pages/Privacy";
@@ -95,6 +96,19 @@ export default function App() {
               <>
                 <SignedIn>
                   <Admin />
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton/>
+                </SignedOut>
+              </>
+            }
+          />
+          <Route
+            path="/admin/teams"
+            element={
+              <>
+                <SignedIn>
+                  <ManageTeams />
                 </SignedIn>
                 <SignedOut>
                   <SignInButton/>
