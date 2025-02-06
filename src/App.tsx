@@ -10,6 +10,7 @@ import { TNC } from "./pages/TNC";
 import { Refund } from "./pages/Refund";
 import { Privacy } from "./pages/Privacy";
 import { ContactPage } from "./pages/ContactPage";
+import { Shipping } from "./pages/Shipping";
 import { createUserProfile } from "./services/api";
 
 export default function App() {
@@ -114,6 +115,12 @@ export default function App() {
             path="/contact"
             element={
               <ContactPage />
+            }
+          />
+          <Route
+            path="/shipping"
+            element={
+              <Shipping />
             }
           />
         </Routes>

@@ -69,6 +69,7 @@ export function Footer() {
             <a href="/tnc" className="hover:text-white transition-colors">Terms & Conditions</a>
             <a href="/refund" className="hover:text-white transition-colors">Cancellation & Refund Policy</a>
             <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="/shipping" className="hover:text-white transition-colors">Shipping Policy</a>
           </div>
         </div>
       </div>

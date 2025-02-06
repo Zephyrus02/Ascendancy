@@ -23,25 +23,25 @@ export function Refund() {
           <section className="space-y-4 text-white/70">
             <Separator />
             <p className="leading-relaxed">
-              ATHARV PARAG CHORDIYA believes in helping its customers as far as possible, and has therefore a liberal cancellation policy. Under this policy:
+              Ascendancy values transparency and fairness in its refund policy for tournament registrations and team verifications. Under this policy:
             </p>
             <p className="leading-relaxed">
-              Cancellations will be considered only if the request is made within same day of placing the order. However, the cancellation request may not be entertained if the orders have been communicated to the vendors/merchants.
+              Cancellations will be considered only if the request is made within 24 hours of team registration or verification payment. However, cancellation requests may not be entertained if the tournament scheduling process has already begun.
             </p>
             <p className="leading-relaxed">
-              ATHARV PARAG CHORDIYA does not accept cancellation requests for perishable items. However, refund/replacement can be made if the customer establishes that the quality of product delivered is not good.
+              Ascendancy does not accept cancellation requests once the tournament has commenced. However, refunds can be issued if technical issues on our end prevented team participation.
             </p>
             <p className="leading-relaxed">
-              In case of receipt of damaged or defective items please report the same to our Customer Service team. The request will, however, be entertained once the merchant has checked and determined the same at his own end. This should be reported within same day of receipt of the products.
+              In case of payment processing issues or failed transactions, please report them immediately to our Support team. The request will be reviewed and resolved within 24 hours of receiving the complaint.
             </p>
             <p className="leading-relaxed">
-              In case you feel that the product received is not as shown on the site or as per your expectations, you must bring it to the notice of our customer service within same day of receiving the product. The Customer Service Team after looking into your complaint will take an appropriate decision.
+              If tournament schedules or formats are significantly modified after registration, teams may request refunds within 24 hours of the announcement. Our Support team will review each case individually.
             </p>
             <p className="leading-relaxed">
-              In case of complaints regarding products that come with a warranty from manufacturers, please refer the issue to them.
+              For technical issues during tournaments that result in match disruptions, compensation will be determined by our tournament administrators.
             </p>
             <p className="leading-relaxed">
-              In case of any Refunds approved by ATHARV PARAG CHORDIYA, it'll take 1-2 days for the refund to be processed to the end customer.
+              All approved refunds will be processed within 1-2 business days and credited back to the original payment method.
             </p>
           </section>
         </div>
