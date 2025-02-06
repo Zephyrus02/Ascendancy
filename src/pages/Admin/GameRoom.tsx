@@ -40,8 +40,8 @@ interface Room {
   createdAt: Date;
 }
 
-export function Room() {
-  const [matches, setMatches] = useState<Match[]>([]);
+export function GameRoom() {
+//   const [matches, setMatches] = useState<Match[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(false);

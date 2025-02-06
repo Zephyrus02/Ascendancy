@@ -8,7 +8,7 @@ import { Brackets } from "./pages/Brackets";
 import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
 import { Rooms } from "./pages/Rooms";
-import { Room } from "./pages/admin/Room";
+import { GameRoom } from "./pages/admin/GameRoom";
 import { SetMatches } from "./pages/admin/SetMatches";
 import { ComingSoon } from "./pages/ComingSoon";
 import {Admin} from "./pages/admin";
@@ -156,7 +156,7 @@ export default function App() {
                 <>
                 <SignedIn>
                   <AdminRoute>
-                    <Room />
+                    <GameRoom />
                   </AdminRoute>
                 </SignedIn>
                 <SignedOut>
