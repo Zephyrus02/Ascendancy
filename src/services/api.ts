@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_DEV_URL;
 
 export const createTeam = async (teamData: any) => {
   try {
@@ -222,6 +222,7 @@ interface MatchData {
   team1: {
     id: string;
     name: string;
+    logo: string;  // Add logo field
     captain: {
       id: string;
       username: string;
@@ -230,6 +231,7 @@ interface MatchData {
   team2: {
     id: string;
     name: string;
+    logo: string;  // Add logo field
     captain: {
       id: string;
       username: string;
@@ -238,7 +240,7 @@ interface MatchData {
   date: string;
   time: string;
   round: number;
-  status: 'yet to start' | 'ongoing' | 'completed';
+  status: string;
 }
 
 export const createMatch = async (matchData: MatchData) => {
@@ -257,6 +259,21 @@ export const createMatch = async (matchData: MatchData) => {
     }
 
     return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getMatches = async () => {
+  try {
+    const response = await fetch(`${API_URL}/matches`);
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to fetch matches');
+    }
+
+    return data;
   } catch (error) {
     throw error;
   }

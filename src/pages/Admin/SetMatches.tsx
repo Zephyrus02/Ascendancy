@@ -29,7 +29,6 @@ export function SetMatches() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedTeam1, setSelectedTeam1] = useState<Team | null>(null);
   const [selectedTeam2, setSelectedTeam2] = useState<Team | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState<MatchFormData>({
     team1Id: '',
@@ -80,6 +79,7 @@ export function SetMatches() {
         team1: {
           id: selectedTeam1._id,
           name: selectedTeam1.teamName,
+          logo: selectedTeam1.teamLogo,  // Add team1 logo
           captain: {
             id: team1Captain._id,
             username: team1Captain.name
@@ -88,6 +88,7 @@ export function SetMatches() {
         team2: {
           id: selectedTeam2._id,
           name: selectedTeam2.teamName,
+          logo: selectedTeam2.teamLogo,  // Add team2 logo
           captain: {
             id: team2Captain._id,
             username: team2Captain.name

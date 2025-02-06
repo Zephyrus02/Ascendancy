@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/layouts/AdminLayout';
 import { Search } from 'lucide-react';
 import { ClipLoader } from 'react-spinners';
+import { getMatches } from '../../services/api';
+import toast from 'react-hot-toast';
 
 interface Match {
   id: string;
@@ -22,120 +24,41 @@ interface Match {
   tournament: string;
 }
 
-const sampleMatches: Match[] = [
-  {
-    id: '1',
-    round: 1,
-    status: 'upcoming',
-    team1: {
-      name: 'Team Alpha',
-      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-1.png',
-      score: 0
-    },
-    team2: {
-      name: 'Team Beta',
-      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-2.png',
-      score: 0
-    },
-    date: '2024-03-15',
-    time: '18:00',
-    tournament: 'ASCENDANCY TOURNAMENT'
-  },
-  {
-    id: '2',
-    round: 1,
-    status: 'upcoming',
-    team1: {
-      name: 'Team Delta',
-      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-3.png',
-      score: 0
-    },
-    team2: {
-      name: 'Team Gamma',
-      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-4.png',
-      score: 0
-    },
-    date: '2024-03-15',
-    time: '20:00',
-    tournament: 'ASCENDANCY TOURNAMENT'
-  },
-  {
-    id: '3',
-    round: 2,
-    status: 'upcoming',
-    team1: {
-      name: 'Team Epsilon',
-      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-5.png',
-      score: 0
-    },
-    team2: {
-      name: 'Team Zeta',
-      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-6.png',
-      score: 0
-    },
-    date: '2024-03-16',
-    time: '18:00',
-    tournament: 'ASCENDANCY TOURNAMENT'
-  },
-  {
-    id: '4',
-    round: 2,
-    status: 'upcoming',
-    team1: {
-      name: 'Team Theta',
-      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-1.png',
-      score: 0
-    },
-    team2: {
-      name: 'Team Iota',
-      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-2.png',
-      score: 0
-    },
-    date: '2024-03-16',
-    time: '20:00',
-    tournament: 'ASCENDANCY TOURNAMENT'
-  },
-  {
-    id: '5',
-    round: 3,
-    status: 'upcoming',
-    team1: {
-      name: 'Team Kappa',
-      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-3.png',
-      score: 0
-    },
-    team2: {
-      name: 'Team Lambda',
-      logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-4.png',
-      score: 0
-    },
-    date: '2024-03-17',
-    time: '18:00',
-    tournament: 'ASCENDANCY TOURNAMENT'
-  }
-];
-
 export function Schedule() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    // Simulate API call
-    const fetchMatches = async () => {
-      try {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setMatches(sampleMatches);
-      } catch (error) {
-        console.error('Error fetching matches:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchMatches();
   }, []);
+
+  const fetchMatches = async () => {
+    try {
+      setIsLoading(true);
+      const fetchedMatches = await getMatches();
+      
+      // Sort matches by date and time
+      const sortedMatches = fetchedMatches.sort((a: Match, b: Match) => {
+        const dateA = new Date(`${a.date} ${a.time}`);
+        const dateB = new Date(`${b.date} ${b.time}`);
+        return dateA.getTime() - dateB.getTime();
+      });
+      
+      setMatches(sortedMatches);
+    } catch (error) {
+      console.error('Error fetching matches:', error);
+      toast.error('Failed to fetch matches', {
+        style: {
+          background: '#1a1a1a',
+          color: '#fff',
+          border: '1px solid #FF4655'
+        }
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const filteredMatches = matches.filter(match => 
     match.team1.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
