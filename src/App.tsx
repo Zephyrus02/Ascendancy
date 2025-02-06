@@ -7,6 +7,7 @@ import { Brackets } from "./pages/Brackets";
 import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
 import { ComingSoon } from "./pages/ComingSoon";
+import {Admin} from "./pages/Admin";
 import { TNC } from "./pages/TNC";
 import { Refund } from "./pages/Refund";
 import { Privacy } from "./pages/Privacy";
@@ -91,7 +92,14 @@ export default function App() {
           <Route
             path="/admin"
             element={
-              <ComingSoon />
+              <>
+                <SignedIn>
+                  <Admin />
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton/>
+                </SignedOut>
+              </>
             }
           />
           <Route

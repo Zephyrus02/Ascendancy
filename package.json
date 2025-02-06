@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.6.0",
     "@clerk/clerk-react": "^5.22.10",
     "@emailjs/browser": "^4.4.1",
+    "antd": "^5.23.4",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

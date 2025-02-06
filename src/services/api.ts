@@ -1,6 +1,5 @@
 // const API_URL = import.meta.env.VITE_DEV_URL;
-const API_URL = import.meta.env.VITE_API_URL;
-
+const API_URL = import.meta.env.VITE_DEV_URL;
 
 export const createTeam = async (teamData: any) => {
   try {
@@ -102,6 +101,21 @@ export const deleteTeam = async (teamId: string) => {
     }
 
     return response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const checkAdminStatus = async (userId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/users/${userId}`);
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to check admin status');
+    }
+
+    return data.role === 'admin';
   } catch (error) {
     throw error;
   }
