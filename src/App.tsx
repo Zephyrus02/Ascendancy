@@ -8,18 +8,18 @@ import { Brackets } from "./pages/Brackets";
 import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
 import { Rooms } from "./pages/Rooms";
-import { AdminRooms } from "./pages/admin/AdminRooms";
-import { SetMatches } from "./pages/admin/SetMatches";
-import { ComingSoon } from "./pages/ComingSoon";
-import {Admin} from "./pages/admin";
-import { ManageTeams } from "./pages/admin/ManageTeams";
+import { AdminRooms } from "./pages/Admin/AdminRooms";
+import { SetMatches } from "./pages/Admin/SetMatches";
+// import { ComingSoon } from "./pages/ComingSoon";
+import {Admin} from "./pages/Admin";
+import { ManageTeams } from "./pages/Admin/ManageTeams";
 import { TNC } from "./pages/TNC";
 import { Refund } from "./pages/Refund";
 import { Privacy } from "./pages/Privacy";
 import { ContactPage } from "./pages/ContactPage";
 import { Shipping } from "./pages/Shipping";
 import { createUserProfile } from "./services/api";
-import { Schedule } from "./pages/admin/Schedule";
+import { Schedule } from "./pages/Admin/Schedule";
 import { Toaster } from 'react-hot-toast';
 
 export default function App() {
