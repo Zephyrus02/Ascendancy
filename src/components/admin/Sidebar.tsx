@@ -36,7 +36,7 @@ export function Sidebar() {
       key: 'rooms',
       icon: <GamepadIcon className="w-5 h-5" />,
       label: 'Rooms',
-      path: '/admin/room'
+      path: '/admin/rooms'
     },
     {
       key: 'matches',
