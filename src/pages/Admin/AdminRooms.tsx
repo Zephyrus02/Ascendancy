@@ -40,7 +40,7 @@ interface Room {
   createdAt: Date;
 }
 
-export function GameRoom() {
+export function AdminRooms() {
 //   const [matches, setMatches] = useState<Match[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
