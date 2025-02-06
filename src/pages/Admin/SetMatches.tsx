@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/layouts/AdminLayout';
-import { Search, Plus } from 'lucide-react';
 import { getVerifiedTeams, createMatch } from '../../services/api';
 import toast from 'react-hot-toast';
 
@@ -32,7 +31,6 @@ export function SetMatches() {
   const [selectedTeam2, setSelectedTeam2] = useState<Team | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<MatchFormData>({
     team1Id: '',
     team2Id: '',
@@ -139,11 +137,7 @@ export function SetMatches() {
       setIsSubmitting(false);
     }
   };
-
-  const filteredTeams = teams.filter(team => 
-    team.teamName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
+  
   return (
     <AdminLayout>
       <div className="p-8">
