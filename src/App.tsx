@@ -9,6 +9,7 @@ import { ComingSoon } from "./pages/ComingSoon";
 import { TNC } from "./pages/TNC";
 import { Refund } from "./pages/Refund";
 import { Privacy } from "./pages/Privacy";
+import { ContactPage } from "./pages/ContactPage";
 import { createUserProfile } from "./services/api";
 
 export default function App() {
@@ -107,6 +108,12 @@ export default function App() {
             path="/privacy"
             element={
               <Privacy />
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <ContactPage />
             }
           />
         </Routes>

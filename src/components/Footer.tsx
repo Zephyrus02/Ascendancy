@@ -27,6 +27,7 @@ export function Footer() {
         <a href="/" className="text-center hover:text-gray-300 transition-colors">HOME</a>
         <a href="/learn-more" className="text-center hover:text-gray-300 transition-colors">LEARN MORE</a>
         <a href="/brackets" className="text-center hover:text-gray-300 transition-colors">BRACKETS</a>
+        <a href="/contact" className="text-center hover:text-gray-300 transition-colors">CONTACT</a>
         <a 
           href="/profile"
           onClick={handleAuthClick} 
