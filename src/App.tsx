@@ -7,6 +7,9 @@ import { LearnMore } from "./pages/LearnMore";
 import { Brackets } from "./pages/Brackets";
 import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
+import { Rooms } from "./pages/Rooms";
+import { Room } from "./pages/admin/Room";
+import { SetMatches } from "./pages/admin/SetMatches";
 import { ComingSoon } from "./pages/ComingSoon";
 import {Admin} from "./pages/admin";
 import { ManageTeams } from "./pages/admin/ManageTeams";
@@ -17,6 +20,7 @@ import { ContactPage } from "./pages/ContactPage";
 import { Shipping } from "./pages/Shipping";
 import { createUserProfile } from "./services/api";
 import { Schedule } from "./pages/admin/Schedule";
+import { Toaster } from 'react-hot-toast';
 
 export default function App() {
   const { user, isLoaded } = useUser();
@@ -38,137 +42,177 @@ export default function App() {
   }, [user, isLoaded]);
 
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-[#111] text-white w-full max-w-[100vw] overflow-x-hidden">
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Landing />
-            }
-          />
-          <Route
-            path="/learn-more"
-            element={
-              <LearnMore />
-            }
-          />
-          <Route
-            path="/create-team"
-            element={
-              <>
-              <SignedIn>
-                <CreateTeam />
-              </SignedIn>
-              <SignedOut>
-                <SignInButton />
-              </SignedOut>
-              </>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <>
+    <>
+      <Toaster position="top-right" />
+      <BrowserRouter>
+        <div className="min-h-screen bg-[#111] text-white w-full max-w-[100vw] overflow-x-hidden">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Landing />
+              }
+            />
+            <Route
+              path="/learn-more"
+              element={
+                <LearnMore />
+              }
+            />
+            <Route
+              path="/create-team"
+              element={
+                <>
                 <SignedIn>
-                  <Profile />
+                  <CreateTeam />
                 </SignedIn>
                 <SignedOut>
                   <SignInButton />
                 </SignedOut>
-              </>
+                </>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <>
+                  <SignedIn>
+                    <Profile />
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton />
+                  </SignedOut>
+                </>
 
-            }
-          />
-          <Route
-            path="/brackets"
-            element={
-              <Brackets />
-            }
-          />
-          <Route
-            path="/rooms"
-            element={
-              <ComingSoon />
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <>
+              }
+            />
+            <Route
+              path="/brackets"
+              element={
+                <Brackets />
+              }
+            />
+            <Route
+              path="/rooms"
+              element={
+                <>
+                  <SignedIn>
+                    <Rooms />
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton/>
+                  </SignedOut>
+                </>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <>
+                  <SignedIn>
+                    <AdminRoute>
+                      <Admin />
+                    </AdminRoute>
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton/>
+                  </SignedOut>
+                </>
+              }
+            />
+            <Route
+              path="/admin/teams"
+              element={
+                <>
+                  <SignedIn>
+                    <AdminRoute>
+                      <ManageTeams />
+                    </AdminRoute>
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton/>
+                  </SignedOut>
+                </>
+              }
+            />
+            <Route
+              path="/admin/schedule"
+              element={
+                <>
                 <SignedIn>
                   <AdminRoute>
-                    <Admin />
+                    <Schedule />
                   </AdminRoute>
                 </SignedIn>
                 <SignedOut>
-                  <SignInButton/>
-                </SignedOut>
+                <SignInButton/>
+              </SignedOut>
               </>
-            }
-          />
-          <Route
-            path="/admin/teams"
-            element={
-              <>
+              }
+            />
+            <Route
+              path="/admin/room"
+              element={
+                <>
                 <SignedIn>
                   <AdminRoute>
-                    <ManageTeams />
+                    <Room />
                   </AdminRoute>
                 </SignedIn>
                 <SignedOut>
-                  <SignInButton/>
-                </SignedOut>
+                <SignInButton/>
+              </SignedOut>
               </>
-            }
-          />
-          <Route
-            path="/admin/schedule"
-            element={
-              <>
-              <SignedIn>
-                <AdminRoute>
-                  <Schedule />
-                </AdminRoute>
-              </SignedIn>
-              <SignedOut>
-              <SignInButton/>
-            </SignedOut>
-            </>
-            }
-          />
-          <Route
-            path="/tnc"
-            element={
-              <TNC />
-            }
-          />
-          <Route
-            path="/refund"
-            element={
-              <Refund />
-            }
-          />
-          <Route
-            path="/privacy"
-            element={
-              <Privacy />
-            }
-          />
-          <Route
-            path="/contact"
-            element={
-              <ContactPage />
-            }
-          />
-          <Route
-            path="/shipping"
-            element={
-              <Shipping />
-            }
-          />
-        </Routes>
-      </div>
-    </BrowserRouter>
+              }
+            />
+            <Route
+              path="/admin/matches"
+              element={
+                <>
+                <SignedIn>
+                  <AdminRoute>
+                    <SetMatches />
+                  </AdminRoute>
+                </SignedIn>
+                <SignedOut>
+                <SignInButton/>
+              </SignedOut>
+              </>
+              }
+            />
+            <Route
+              path="/tnc"
+              element={
+                <TNC />
+              }
+            />
+            <Route
+              path="/refund"
+              element={
+                <Refund />
+              }
+            />
+            <Route
+              path="/privacy"
+              element={
+                <Privacy />
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <ContactPage />
+              }
+            />
+            <Route
+              path="/shipping"
+              element={
+                <Shipping />
+              }
+            />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </>
   );
 }

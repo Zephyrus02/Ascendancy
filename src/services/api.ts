@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_DEV_URL;
 
 export const createTeam = async (teamData: any) => {
   try {
@@ -34,7 +34,6 @@ export const createUserProfile = async (userId: string, username: string) => {
     });
 
     const data = await response.json();
-    console.log('Response data:', data);
     
     if (!response.ok) {
       throw new Error(data.message || 'Failed to create user profile');
@@ -115,6 +114,149 @@ export const checkAdminStatus = async (userId: string) => {
     }
 
     return data.role === 'admin';
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createGameRoom = async (matchData: {
+  matchId: string;
+  team1Captain: {
+    userId: string;
+    username: string;
+    teamName: string;
+  };
+  team2Captain: {
+    userId: string;
+    username: string;
+    teamName: string;
+  };
+}) => {
+  try {
+    const response = await fetch(`${API_URL}/rooms/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(matchData)
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to create room');
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const joinGameRoom = async (roomKey: string, userId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/rooms/join`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ roomKey, userId })
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to join room');
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getRoomStatus = async (roomKey: string) => {
+  try {
+    const response = await fetch(`${API_URL}/rooms/${roomKey}`);
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to get room status');
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllRooms = async () => {
+  try {
+    const response = await fetch(`${API_URL}/rooms`);
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to fetch rooms');
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getVerifiedTeams = async () => {
+  try {
+    const response = await fetch(`${API_URL}/teams/verified`);
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to fetch teams');
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+interface MatchData {
+  team1: {
+    id: string;
+    name: string;
+    captain: {
+      id: string;
+      username: string;
+    };
+  };
+  team2: {
+    id: string;
+    name: string;
+    captain: {
+      id: string;
+      username: string;
+    };
+  };
+  date: string;
+  time: string;
+  round: number;
+  status: 'yet to start' | 'ongoing' | 'completed';
+}
+
+export const createMatch = async (matchData: MatchData) => {
+  try {
+    const response = await fetch(`${API_URL}/matches`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(matchData)
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to create match');
+    }
+
+    return await response.json();
   } catch (error) {
     throw error;
   }
