@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SignedIn, SignedOut, SignInButton, useUser } from "@clerk/clerk-react";
 import { useEffect } from "react";
+import { AdminRoute } from "./components/admin/AdminRoute";
 import { Landing } from "./pages/Landing";
 import { LearnMore } from "./pages/LearnMore";
 import { Brackets } from "./pages/Brackets";
@@ -95,7 +96,9 @@ export default function App() {
             element={
               <>
                 <SignedIn>
-                  <Admin />
+                  <AdminRoute>
+                    <Admin />
+                  </AdminRoute>
                 </SignedIn>
                 <SignedOut>
                   <SignInButton/>
@@ -108,7 +111,9 @@ export default function App() {
             element={
               <>
                 <SignedIn>
-                  <ManageTeams />
+                  <AdminRoute>
+                    <ManageTeams />
+                  </AdminRoute>
                 </SignedIn>
                 <SignedOut>
                   <SignInButton/>
