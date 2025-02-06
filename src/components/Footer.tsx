@@ -63,7 +63,7 @@ export function Footer() {
       <div className="mt-8 pt-8 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-white/60 text-sm text-center md:text-left">
-            © 2025 Ascendancy. All rights reserved.
+            © 2025 Ascendancy eSports. All rights reserved.
           </p>
           <div className="flex flex-col md:flex-row gap-4 md:gap-6 text-sm text-white/60 text-center md:text-left">
             <a href="/tnc" className="hover:text-white transition-colors">Terms & Conditions</a>
