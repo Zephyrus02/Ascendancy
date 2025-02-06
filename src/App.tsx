@@ -3,6 +3,7 @@ import { SignedIn, SignedOut, SignInButton, useUser } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import { Landing } from "./pages/Landing";
 import { LearnMore } from "./pages/LearnMore";
+import { Brackets } from "./pages/Brackets";
 import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
 import { ComingSoon } from "./pages/ComingSoon";
@@ -78,7 +79,7 @@ export default function App() {
           <Route
             path="/brackets"
             element={
-              <ComingSoon />
+              <Brackets />
             }
           />
           <Route
