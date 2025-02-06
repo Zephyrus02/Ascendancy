@@ -8,6 +8,7 @@ import { Profile } from "./pages/Profile";
 import { ComingSoon } from "./pages/ComingSoon";
 import { TNC } from "./pages/TNC";
 import { Refund } from "./pages/Refund";
+import { Privacy } from "./pages/Privacy";
 import { createUserProfile } from "./services/api";
 
 export default function App() {
@@ -105,7 +106,7 @@ export default function App() {
           <Route
             path="/privacy"
             element={
-              <ComingSoon />
+              <Privacy />
             }
           />
         </Routes>
