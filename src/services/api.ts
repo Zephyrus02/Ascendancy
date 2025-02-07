@@ -162,7 +162,7 @@ interface JoinRoomData {
   roomCode: string;
   roomPasskey: string;
   userId: string;
-  isAdmin?: boolean;  // Add this field
+  isAdmin?: boolean;
 }
 
 export const joinGameRoom = async (data: JoinRoomData) => {
@@ -186,16 +186,14 @@ export const joinGameRoom = async (data: JoinRoomData) => {
   }
 };
 
-export const getRoomStatus = async (roomKey: string) => {
+export const getRoomStatus = async (roomCode: string) => {
   try {
-    const response = await fetch(`${API_URL}/rooms/${roomKey}`);
-    const data = await response.json();
-    
+    const response = await fetch(`${API_URL}/rooms/${roomCode}/status`);
     if (!response.ok) {
-      throw new Error(data.message || 'Failed to get room status');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to get room status');
     }
-
-    return data;
+    return await response.json();
   } catch (error) {
     throw error;
   }

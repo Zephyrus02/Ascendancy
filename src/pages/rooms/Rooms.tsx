@@ -6,35 +6,15 @@ import { joinGameRoom } from '../../services/api';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { Separator } from '../../components/Separator';
-import { Loader2 } from 'lucide-react';
-
-interface RoomCredentials {
-  roomCode: string;
-  roomPasskey: string;
-}
-
-interface RoomStatus {
-  team1: {
-    teamName: string;
-    joined: boolean;
-  };
-  team2: {
-    teamName: string;
-    joined: boolean;
-  };
-  adminJoined: boolean;  // Add this field
-  adminId: string;       // Add this field
-}
 
 export function Rooms() {
   const { user } = useUser();
   const navigate = useNavigate();
-  const [credentials, setCredentials] = useState<RoomCredentials>({
+  const [credentials, setCredentials] = useState({
     roomCode: '',
     roomPasskey: ''
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [roomStatus, setRoomStatus] = useState<RoomStatus | null>(null);
 
   const handleJoinRoom = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,16 +33,8 @@ export function Rooms() {
       });
 
       if (roomData.authorized) {
-        setRoomStatus(roomData.room);
-        const allCaptainsJoined = roomData.room.team1.joined && roomData.room.team2.joined;
-        
-        if (allCaptainsJoined) {
-          toast.success('Room is ready! Both captains have joined.');
-          navigate(`/game-room/${roomData.roomCode}`);
-        } else {
-          toast.success('Successfully joined! Waiting for other captain...');
-          // Show waiting message instead of redirecting
-        }
+        toast.success('Successfully joined the room!');
+        navigate(`/rooms/${credentials.roomCode}`); // Make sure this matches your route path
       } else {
         toast.error('You are not authorized to join this room');
       }
@@ -71,60 +43,6 @@ export function Rooms() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const renderRoomStatusContent = () => {
-    const allCaptainsJoined = roomStatus?.team1.joined && roomStatus?.team2.joined;
-
-    return (
-      <div className="mt-8 p-6 bg-[#1a1a1a] rounded-lg border border-gray-800">
-        <h3 className="text-xl font-semibold mb-4">Room Status</h3>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span>{roomStatus?.team1.teamName}</span>
-            <span className={`px-3 py-1 rounded-full text-sm ${
-              roomStatus?.team1.joined ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'
-            }`}>
-              {roomStatus?.team1.joined ? 'Joined' : 'Waiting'}
-            </span>
-          </div>
-          
-          <div className="flex justify-between items-center">
-            <span>{roomStatus?.team2.teamName}</span>
-            <span className={`px-3 py-1 rounded-full text-sm ${
-              roomStatus?.team2.joined ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'
-            }`}>
-              {roomStatus?.team2.joined ? 'Joined' : 'Waiting'}
-            </span>
-          </div>
-
-          <div className="mt-6">
-            {allCaptainsJoined ? (
-              <button
-                onClick={() => navigate(`/game-room/${credentials.roomCode}`)}
-                className="w-full px-8 py-3 bg-green-500 transform skew-x-[-20deg]
-                         overflow-hidden transition-all duration-300
-                         hover:bg-green-600"
-              >
-                <span className="block transform skew-x-[20deg]">
-                  Enter Room
-                </span>
-              </button>
-            ) : (
-              <div className="text-center space-y-4">
-                <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#FF4655]" />
-                <p className="text-gray-400">
-                  Waiting for all captains to join...
-                </p>
-                <p className="text-sm text-gray-500">
-                  The room will be ready when both captains have joined
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -205,8 +123,6 @@ export function Rooms() {
           </form>
         </div>
       </div>
-
-      {roomStatus && renderRoomStatusContent()}
 
       <Footer />
     </div>

@@ -175,7 +175,7 @@ export function AdminRooms() {
 
       if (roomData.authorized) {
         toast.success('Joined room successfully!');
-        navigate(`/game-room/${room.roomCode}`);
+        navigate(`/admin/rooms/${room.roomCode}`);
       }
     } catch (error) {
       toast.error('Failed to join room');

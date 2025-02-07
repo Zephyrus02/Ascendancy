@@ -21,6 +21,8 @@ import { Shipping } from "./pages/Shipping";
 import { createUserProfile } from "./services/api";
 import { Schedule } from "./pages/Admin/Schedule";
 import { Toaster } from 'react-hot-toast';
+import { PickBan } from "./pages/rooms/PickBan";
+import { AdminPickBan } from "./pages/Admin/AdminPickBan";
 
 export default function App() {
   const { user, isLoaded } = useUser();
@@ -208,6 +210,45 @@ export default function App() {
               path="/shipping"
               element={
                 <Shipping />
+              }
+            />
+            <Route
+              path="/rooms/:roomCode"
+              element={
+                <>
+                  <SignedIn>
+                    <PickBan />
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton />
+                  </SignedOut>
+                </>
+              }
+            />
+            <Route
+              path="/admin/rooms/:roomCode"
+              element={
+                <>
+                  <SignedIn>
+                    <AdminPickBan />
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton />
+                  </SignedOut>
+                </>
+              }
+            />
+            <Route
+              path="/game-room/:roomCode"
+              element={
+                <>
+                  <SignedIn>
+                    <PickBan />
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton />
+                  </SignedOut>
+                </>
               }
             />
           </Routes>
