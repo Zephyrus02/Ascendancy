@@ -6,6 +6,8 @@ import { Footer } from '../../components/Footer';
 import { Separator } from '../../components/Separator';
 import { Loader2 } from 'lucide-react';
 import { getRoomStatus } from '../../services/api';
+import { MapPool } from '../../components/game/MapPool';
+import { valorantMaps } from '../../data/maps';
 
 interface RoomStatus {
   roomCode: string;
@@ -35,6 +37,7 @@ export function PickBan() {
   const [roomStatus, setRoomStatus] = useState<RoomStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [maps, setMaps] = useState(valorantMaps);
 
   const fetchRoomStatus = async () => {
     if (!roomCode) return;
@@ -155,6 +158,14 @@ export function PickBan() {
             </span>
           </div>
         </div>
+
+        {/* Map Pool */}
+        {allPlayersJoined && (
+          <MapPool
+            maps={maps}
+            disabled={true}
+          />
+        )}
 
         {/* Waiting Message */}
         {!allPlayersJoined && (

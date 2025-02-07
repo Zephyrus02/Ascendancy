@@ -5,6 +5,8 @@ import { AdminLayout } from '../../components/layouts/AdminLayout';
 import { Separator } from '../../components/Separator';
 import { Loader2 } from 'lucide-react';
 import { getRoomStatus } from '../../services/api';
+import { MapPool } from '../../components/game/MapPool';
+import { valorantMaps } from '../../data/maps';
 
 interface RoomStatus {
   roomCode: string;
@@ -34,6 +36,8 @@ export function AdminPickBan() {
   const [roomStatus, setRoomStatus] = useState<RoomStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [maps, setMaps] = useState(valorantMaps);
+  const [pickBanStarted, setPickBanStarted] = useState(false);
 
   const fetchRoomStatus = async () => {
     if (!roomCode) return;
@@ -78,6 +82,15 @@ export function AdminPickBan() {
       title: "Waiting for Players",
       description: "Wait for all team captains to join before starting the map selection"
     };
+  };
+
+  const handleStartPickBan = () => {
+    setPickBanStarted(true);
+  };
+
+  const handleMapSelect = (mapId: string) => {
+    // Add your map selection logic here
+    console.log('Selected map:', mapId);
   };
 
   if (isLoading) {
@@ -137,6 +150,7 @@ export function AdminPickBan() {
               <h3 className="font-bold mb-4">Admin Controls</h3>
               <div className="space-y-4">
                 <button
+                  onClick={handleStartPickBan}
                   className="w-full px-4 py-2 bg-[#FF4655] rounded hover:bg-[#ff5e6b] transition-colors disabled:opacity-50"
                   disabled={!allPlayersJoined}
                 >
@@ -163,6 +177,16 @@ export function AdminPickBan() {
               </div>
             </div>
           </div>
+
+          {/* Map Pool */}
+          {pickBanStarted && (
+            <MapPool
+              maps={maps}
+              isAdmin={true}
+              onMapSelect={handleMapSelect}
+              disabled={!allPlayersJoined}
+            />
+          )}
         </div>
       </div>
     </AdminLayout>

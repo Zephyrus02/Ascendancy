@@ -14,12 +14,17 @@ export default {
         shine: {
           '0%': { transform: 'translateX(-200%)' },
           '100%': { transform: 'translateX(200%)' }
+        },
+        'pan-right': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' }
         }
       },
       animation: {
         scroll: 'scroll 25s linear infinite',
         shimmer: 'shimmer 2s infinite',
         shine: 'shine 3s linear infinite',
+        'pan-right': 'pan-right 15s linear infinite'
       }
     },
   },

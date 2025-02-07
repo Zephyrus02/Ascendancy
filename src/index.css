@@ -74,3 +74,8 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #ff5e6b;
 }
+
+.writing-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
