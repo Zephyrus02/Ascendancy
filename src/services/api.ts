@@ -158,22 +158,29 @@ export const createGameRoom = async (data: CreateRoomData) => {
   }
 };
 
-export const joinGameRoom = async (roomKey: string, userId: string) => {
+interface JoinRoomData {
+  roomCode: string;
+  roomPasskey: string;
+  userId: string;
+  isAdmin?: boolean;  // Add this field
+}
+
+export const joinGameRoom = async (data: JoinRoomData) => {
   try {
     const response = await fetch(`${API_URL}/rooms/join`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ roomKey, userId })
+      body: JSON.stringify(data)
     });
 
-    const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message || 'Failed to join room');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to join room');
     }
 
-    return data;
+    return await response.json();
   } catch (error) {
     throw error;
   }

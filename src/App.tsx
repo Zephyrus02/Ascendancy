@@ -7,7 +7,7 @@ import { LearnMore } from "./pages/LearnMore";
 import { Brackets } from "./pages/Brackets";
 import { CreateTeam } from "./pages/CreateTeam";
 import { Profile } from "./pages/Profile";
-import { Rooms } from "./pages/Rooms";
+import { Rooms } from "./pages/rooms/Rooms";
 import { AdminRooms } from "./pages/Admin/AdminRooms";
 import { SetMatches } from "./pages/Admin/SetMatches";
 // import { ComingSoon } from "./pages/ComingSoon";

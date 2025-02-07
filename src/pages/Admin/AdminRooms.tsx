@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/layouts/AdminLayout';
 import { Search, Plus } from 'lucide-react';
-import { createGameRoom, getPendingMatches, getAllRooms } from '../../services/api';
+import { createGameRoom, getPendingMatches, getAllRooms, joinGameRoom } from '../../services/api';
 import { useUser } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface Match {
   _id: string;
@@ -30,16 +31,24 @@ interface Match {
 }
 
 interface Room {
-  roomKey: string;
+  roomCode: string;     
+  roomPasskey: string;  
+  adminId: string;      
+  adminUsername: string;
+  adminJoined: boolean; // Add this field
   matchId: string;
-  team1Captain: {
-    userId: string;
+  team1: {             
+    teamId: string;    
     teamName: string;
+    captainId: string;
+    captainUsername: string;
     joined: boolean;
   };
-  team2Captain: {
-    userId: string;
+  team2: {             
+    teamId: string;    
     teamName: string;
+    captainId: string;
+    captainUsername: string;
     joined: boolean;
   };
   createdAt: Date;
@@ -47,7 +56,8 @@ interface Room {
 
 export function AdminRooms() {
   const { user } = useUser();
-  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
+  const navigate = useNavigate();
+  // const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,6 +97,7 @@ export function AdminRooms() {
     try {
       setIsLoading(true);
       const data = await getAllRooms();
+      console.log('Fetched rooms:', data); // Add this line
       setRooms(data);
     } catch (error) {
       console.error('Error fetching rooms:', error);
@@ -144,6 +155,30 @@ export function AdminRooms() {
       toast.error('Failed to create room');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Add this function to handle admin room join
+  const handleAdminJoinRoom = async (room: Room) => {
+    if (!user?.id) {
+      toast.error('Please ensure you are logged in');
+      return;
+    }
+
+    try {
+      const roomData = await joinGameRoom({
+        roomCode: room.roomCode,
+        roomPasskey: room.roomPasskey,
+        userId: user.id,
+        isAdmin: true
+      });
+
+      if (roomData.authorized) {
+        toast.success('Joined room successfully!');
+        navigate(`/game-room/${room.roomCode}`);
+      }
+    } catch (error) {
+      toast.error('Failed to join room');
     }
   };
 
@@ -249,31 +284,48 @@ export function AdminRooms() {
         <div className="grid gap-6">
           {rooms.map((room) => (
             <div
-              key={room.roomKey}
+              key={room.roomCode}  // Changed from roomKey
               className="bg-[#1a1a1a] p-6 rounded-lg"
             >
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold">Room Key: {room.roomKey}</h3>
+                <div>
+                  <h3 className="text-xl font-bold">Room Code: {room.roomCode}</h3>
+                  <p className="text-sm text-gray-400 mt-1">Passkey: {room.roomPasskey}</p>
+                </div>
                 <span className="px-3 py-1 bg-[#FF4655] rounded-full text-sm">
                   Active
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-8">
+              <div className="grid grid-cols-2 gap-8 mb-6">
                 <div>
-                  <p className="text-white/70">Team 1: {room.team1Captain.teamName}</p>
+                  <p className="text-white/70">Team 1: {room.team1.teamName}</p>
                   <p className="text-white/70">
-                    Status: {room.team1Captain.joined ? 'Joined' : 'Waiting'}
+                    Status: {room.team1.joined ? 'Joined' : 'Waiting'}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-white/70">Team 2: {room.team2Captain.teamName}</p>
+                  <p className="text-white/70">Team 2: {room.team2.teamName}</p>
                   <p className="text-white/70">
-                    Status: {room.team2Captain.joined ? 'Joined' : 'Waiting'}
+                    Status: {room.team2.joined ? 'Joined' : 'Waiting'}
                   </p>
                 </div>
               </div>
+
+              {user?.id === room.adminId && !room.adminJoined && (
+                <button
+                  onClick={() => handleAdminJoinRoom(room)}
+                  className="w-full px-8 py-3 bg-[#FF4655] transform skew-x-[-20deg]
+                           overflow-hidden transition-all duration-300
+                           hover:bg-[#ff5e6b] disabled:opacity-50
+                           disabled:cursor-not-allowed"
+                >
+                  <span className="block transform skew-x-[20deg]">
+                    Join as Admin
+                  </span>
+                </button>
+              )}
             </div>
           ))}
         </div>
