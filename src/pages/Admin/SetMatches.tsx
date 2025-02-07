@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/layouts/AdminLayout';
-import { getVerifiedTeams, createMatch } from '../../services/api';
+import { getVerifiedTeams, createMatch, getVerifiedTeamById } from '../../services/api';
 import toast from 'react-hot-toast';
 
 interface TeamMember {
@@ -15,6 +15,8 @@ interface Team {
   teamLogo: string;
   members: TeamMember[];
   verified: boolean;
+  userId: string;    // Add team owner's userId
+  username: string;  // Add team owner's username
 }
 
 interface MatchFormData {
@@ -56,18 +58,43 @@ export function SetMatches() {
     }
   };
 
+  const handleTeamSelection = async (teamId: string, isTeam1: boolean) => {
+    try {
+      const teamDetails = await getVerifiedTeamById(teamId);
+      const captain = teamDetails.members.find((m: TeamMember) => m.role === 'Captain');
+
+      if (!captain) {
+        throw new Error(`No captain found for team ${teamDetails.teamName}`);
+      }
+
+      // Include all required properties from Team interface
+      const selectedTeam: Team = {
+        _id: teamDetails._id,
+        teamName: teamDetails.teamName,
+        teamLogo: teamDetails.teamLogo,
+        members: teamDetails.members,
+        verified: teamDetails.verified,
+        userId: teamDetails.userId,
+        username: teamDetails.username
+      };
+
+      if (isTeam1) {
+        setFormData({ ...formData, team1Id: teamId });
+        setSelectedTeam1(selectedTeam);
+      } else {
+        setFormData({ ...formData, team2Id: teamId });
+        setSelectedTeam2(selectedTeam);
+      }
+    } catch (error) {
+      console.error('Error fetching team details:', error);
+      toast.error(`Failed to fetch team details: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   const handleCreateMatch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTeam1 || !selectedTeam2) {
       setError('Please select both teams');
-      return;
-    }
-
-    const team1Captain = selectedTeam1.members.find(m => m.role === 'Captain');
-    const team2Captain = selectedTeam2.members.find(m => m.role === 'Captain');
-
-    if (!team1Captain || !team2Captain) {
-      setError('Captain not found for one or both teams');
       return;
     }
 
@@ -79,19 +106,19 @@ export function SetMatches() {
         team1: {
           id: selectedTeam1._id,
           name: selectedTeam1.teamName,
-          logo: selectedTeam1.teamLogo,  // Add team1 logo
+          logo: selectedTeam1.teamLogo,
           captain: {
-            id: team1Captain._id,
-            username: team1Captain.name
+            userId: selectedTeam1.userId,     // This should match the userId from Team model
+            username: selectedTeam1.username
           }
         },
         team2: {
           id: selectedTeam2._id,
           name: selectedTeam2.teamName,
-          logo: selectedTeam2.teamLogo,  // Add team2 logo
+          logo: selectedTeam2.teamLogo,
           captain: {
-            id: team2Captain._id,
-            username: team2Captain.name
+            userId: selectedTeam2.userId,     // This should match the userId from Team model
+            username: selectedTeam2.username
           }
         },
         date: formData.date,
@@ -100,7 +127,7 @@ export function SetMatches() {
         status: 'yet to start'
       });
 
-      // Reset form
+      // Reset form and show success message
       setSelectedTeam1(null);
       setSelectedTeam2(null);
       setFormData({
@@ -111,29 +138,16 @@ export function SetMatches() {
         round: 1
       });
       
-      // Show success toast
       toast.success('Match created successfully!', {
         style: {
           background: '#1a1a1a',
           color: '#fff',
           border: '1px solid #FF4655'
-        },
-        iconTheme: {
-          primary: '#FF4655',
-          secondary: '#fff'
         }
       });
-      
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create match');
-      // Show error toast
-      toast.error('Failed to create match', {
-        style: {
-          background: '#1a1a1a',
-          color: '#fff',
-          border: '1px solid #FF4655'
-        }
-      });
+      toast.error('Failed to create match');
     } finally {
       setIsSubmitting(false);
     }
@@ -159,10 +173,7 @@ export function SetMatches() {
                 <label className="block text-white/60 mb-2">Team 1</label>
                 <select
                   value={formData.team1Id}
-                  onChange={(e) => {
-                    setFormData({...formData, team1Id: e.target.value});
-                    setSelectedTeam1(teams.find(t => t._id === e.target.value) || null);
-                  }}
+                  onChange={(e) => handleTeamSelection(e.target.value, true)}
                   className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4
                            focus:outline-none focus:border-[#FF4655]"
                   required
@@ -178,10 +189,7 @@ export function SetMatches() {
                 <label className="block text-white/60 mb-2">Team 2</label>
                 <select
                   value={formData.team2Id}
-                  onChange={(e) => {
-                    setFormData({...formData, team2Id: e.target.value});
-                    setSelectedTeam2(teams.find(t => t._id === e.target.value) || null);
-                  }}
+                  onChange={(e) => handleTeamSelection(e.target.value, false)}
                   className="w-full bg-[#111] text-white border border-gray-800 py-3 px-4
                            focus:outline-none focus:border-[#FF4655]"
                   required

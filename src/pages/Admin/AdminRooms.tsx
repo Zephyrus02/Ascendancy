@@ -6,7 +6,7 @@ import { useUser } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
 
 interface Match {
-  _id: string;  // Change id to _id to match MongoDB's format
+  _id: string;
   round: number;
   status: 'yet to start' | 'started' | 'completed';
   team1: {
@@ -118,12 +118,14 @@ export function AdminRooms() {
         team1: {
           id: match.team1.id,
           name: match.team1.name,
-          captainId: match.team1.captain.userId
+          captainId: match.team1.captain.userId,
+          captainUsername: match.team1.captain.username
         },
         team2: {
           id: match.team2.id,
           name: match.team2.name,
-          captainId: match.team2.captain.userId
+          captainId: match.team2.captain.userId,
+          captainUsername: match.team2.captain.username
         }
       });
   

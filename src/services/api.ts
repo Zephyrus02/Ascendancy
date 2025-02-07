@@ -1,5 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL;
-// const API_URL = import.meta.env.VITE_DEV_URL;
+// const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_DEV_URL;
 
 export const createTeam = async (teamData: any) => {
   try {
@@ -127,11 +127,13 @@ interface CreateRoomData {
     id: string;
     name: string;
     captainId: string;
+    captainUsername: string;
   };
   team2: {
     id: string;
     name: string;
     captainId: string;
+    captainUsername: string;
   };
 }
 
@@ -146,7 +148,8 @@ export const createGameRoom = async (data: CreateRoomData) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to create room');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to create room');
     }
 
     return await response.json();
@@ -194,13 +197,10 @@ export const getRoomStatus = async (roomKey: string) => {
 export const getAllRooms = async () => {
   try {
     const response = await fetch(`${API_URL}/rooms`);
-    const data = await response.json();
-    
     if (!response.ok) {
-      throw new Error(data.message || 'Failed to fetch rooms');
+      throw new Error('Failed to fetch rooms');
     }
-
-    return data;
+    return await response.json();
   } catch (error) {
     throw error;
   }
@@ -221,24 +221,39 @@ export const getVerifiedTeams = async () => {
   }
 };
 
-interface MatchData {
+export const getVerifiedTeamById = async (teamId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/teams/verified/${teamId}`);
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to fetch team');
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+interface CreateMatchData {
   team1: {
     id: string;
     name: string;
-    logo: string;  // Add logo field
+    logo: string;
     captain: {
-      id: string;
+      userId: string;
       username: string;
-    };
+    }
   };
   team2: {
     id: string;
     name: string;
-    logo: string;  // Add logo field
+    logo: string;
     captain: {
-      id: string;
+      userId: string;
       username: string;
-    };
+    }
   };
   date: string;
   time: string;
@@ -246,7 +261,7 @@ interface MatchData {
   status: string;
 }
 
-export const createMatch = async (matchData: MatchData) => {
+export const createMatch = async (matchData: CreateMatchData) => {
   try {
     const response = await fetch(`${API_URL}/matches`, {
       method: 'POST',
