@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/layouts/AdminLayout';
 import { Search, Plus } from 'lucide-react';
-import { createGameRoom } from '../../services/api';
+import { createGameRoom, getPendingMatches, getAllRooms } from '../../services/api';
+import { useUser } from '@clerk/clerk-react';
+import toast from 'react-hot-toast';
 
 interface Match {
-  id: string;
+  _id: string;  // Change id to _id to match MongoDB's format
   round: number;
+  status: 'yet to start' | 'started' | 'completed';
   team1: {
+    id: string;
     name: string;
     captain: {
       userId: string;
@@ -14,6 +18,7 @@ interface Match {
     };
   };
   team2: {
+    id: string;
     name: string;
     captain: {
       userId: string;
@@ -41,7 +46,7 @@ interface Room {
 }
 
 export function AdminRooms() {
-//   const [matches, setMatches] = useState<Match[]>([]);
+  const { user } = useUser();
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,70 +66,80 @@ export function AdminRooms() {
 
   const fetchMatches = async () => {
     try {
-      const sampleMatches: Match[] = [
-        {
-          id: '1',
-          round: 1,
-          team1: {
-            name: 'Team Alpha',
-            captain: {
-              userId: 'user1',
-              username: 'captain1'
-            }
-          },
-          team2: {
-            name: 'Team Beta',
-            captain: {
-              userId: 'user2',
-              username: 'captain2'
-            }
-          },
-          date: '2024-03-15',
-          time: '18:00'
-        },
-        // Add more sample matches...
-      ];
-      setFilteredMatches(sampleMatches);
+      setIsLoading(true);
+      const pendingMatches = await getPendingMatches();
+      setFilteredMatches(pendingMatches);
     } catch (error) {
       console.error('Error fetching matches:', error);
+      toast.error('Failed to fetch matches', {
+        style: {
+          background: '#1a1a1a',
+          color: '#fff',
+          border: '1px solid #FF4655'
+        }
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const fetchRooms = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/rooms`);
-      const data = await response.json();
+      setIsLoading(true);
+      const data = await getAllRooms();
       setRooms(data);
     } catch (error) {
       console.error('Error fetching rooms:', error);
+      toast.error('Failed to fetch rooms', {
+        style: {
+          background: '#1a1a1a',
+          color: '#fff',
+          border: '1px solid #FF4655'
+        }
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleCreateRoom = async () => {
-    if (!selectedMatch) return;
-
+  const handleCreateRoom = async (match: Match) => {
+    if (!user?.id) {
+      toast.error('Please ensure you are logged in');
+      return;
+    }
+  
     setIsLoading(true);
     setError(null);
-
+  
     try {
       const newRoom = await createGameRoom({
-        matchId: selectedMatch.id,
-        team1Captain: {
-          userId: selectedMatch.team1.captain.userId,
-          username: selectedMatch.team1.captain.username,
-          teamName: selectedMatch.team1.name,
+        matchId: match._id,
+        adminId: user.id,
+        team1: {
+          id: match.team1.id,
+          name: match.team1.name,
+          captainId: match.team1.captain.userId
         },
-        team2Captain: {
-          userId: selectedMatch.team2.captain.userId,
-          username: selectedMatch.team2.captain.username,
-          teamName: selectedMatch.team2.name,
+        team2: {
+          id: match.team2.id,
+          name: match.team2.name,
+          captainId: match.team2.captain.userId
         }
       });
-
+  
       setRooms([...rooms, newRoom]);
-      setSelectedMatch(null);
+      setShowMatchSelection(false);
+      
+      toast.success('Room created successfully!', {
+        style: {
+          background: '#1a1a1a',
+          color: '#fff',
+          border: '1px solid #FF4655'
+        }
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create room');
+      console.error('Error creating room:', err);
+      toast.error('Failed to create room');
     } finally {
       setIsLoading(false);
     }
@@ -202,14 +217,15 @@ export function AdminRooms() {
                   )
                   .map((match) => (
                     <button
-                      key={match.id}
-                      onClick={() => {
-                        setSelectedMatch(match);
-                        handleCreateRoom();
-                        setShowMatchSelection(false);
+                      key={match._id}  // Use _id instead of id
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                        e.preventDefault();
+                        handleCreateRoom(match);
                       }}
+                      disabled={isLoading}
                       className="w-full p-4 bg-[#111] hover:bg-[#FF4655]/10 transition-colors
-                               border-2 border-transparent hover:border-[#FF4655] rounded-lg text-left"
+                               border-2 border-transparent hover:border-[#FF4655] rounded-lg text-left
+                               disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="flex justify-between items-center">
                         <div>
@@ -218,7 +234,7 @@ export function AdminRooms() {
                             Round {match.round} • {match.date} • {match.time}
                           </p>
                         </div>
-                        <span className="text-[#FF4655]">Select →</span>
+                        <span className="text-[#FF4655]">Create Room →</span>
                       </div>
                     </button>
                   ))}
