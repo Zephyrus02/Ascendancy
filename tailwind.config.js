@@ -18,13 +18,18 @@ export default {
         'pan-right': {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' }
+        },
+        fadeIn: {
+          from: { opacity: 0 },
+          to: { opacity: 1 }
         }
       },
       animation: {
         scroll: 'scroll 25s linear infinite',
         shimmer: 'shimmer 2s infinite',
         shine: 'shine 3s linear infinite',
-        'pan-right': 'pan-right 15s linear infinite'
+        'pan-right': 'pan-right 15s linear infinite',
+        fadeIn: 'fadeIn 0.5s ease-in-out'
       }
     },
   },

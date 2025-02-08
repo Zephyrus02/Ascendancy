@@ -86,9 +86,13 @@ export function PickBan() {
         const status = await getRoomStatus(roomCode);
         setRoomStatus(status);
         
-        // Check if map veto has started
-        if (status.pickBanState?.mapVetoStarted && !showMapPool) {
+        // Check if pick/ban has started and update UI accordingly
+        if (status.pickBanState?.isStarted && !showMapPool) {
           setShowMapPool(true);
+          setMaps(prevMaps => prevMaps.map(map => ({
+            ...map,
+            status: status.pickBanState.mapStatuses?.[map.id] || 'available'
+          })));
           toast.success('Map veto has started!');
         }
         
@@ -98,13 +102,12 @@ export function PickBan() {
       }
     };
 
-    // Initial fetch
     fetchAndUpdateStatus();
-
-    // Poll for updates
-    const interval = setInterval(fetchAndUpdateStatus, 3000);
+    
+    // Poll for updates more frequently during pick/ban
+    const interval = setInterval(fetchAndUpdateStatus, 2000); // Poll every 2 seconds
     return () => clearInterval(interval);
-  }, [roomCode, showMapPool]); // Add showMapPool to dependencies
+  }, [roomCode]);
 
   const allPlayersJoined = roomStatus?.team1.joined && 
                           roomStatus?.team2.joined && 
@@ -130,7 +133,7 @@ export function PickBan() {
   };
 
   const isPickBanInProgress = () => {
-    return roomStatus?.pickBanState?.mapVetoStarted && allPlayersJoined;
+    return roomStatus?.pickBanState?.isStarted && allPlayersJoined;
   };
 
   if (isLoading) {
@@ -210,11 +213,13 @@ export function PickBan() {
 
         {/* Map Pool - Only show when pick/ban has started */}
         {isPickBanInProgress() ? (
-          <MapPool
-            maps={maps}
-            disabled={true}
-            mapStatuses={roomStatus?.pickBanState?.mapStatuses}
-          />
+          <div className="mt-8 animate-fadeIn">
+            <MapPool
+              maps={maps}
+              disabled={true}
+              mapStatuses={roomStatus?.pickBanState?.mapStatuses}
+            />
+          </div>
         ) : (
           <div className="text-center mt-12 space-y-4">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#FF4655]" />
