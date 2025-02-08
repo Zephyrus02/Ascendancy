@@ -1,5 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL;
-// const API_URL = import.meta.env.VITE_DEV_URL;
+// const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_DEV_URL;
 
 export const createTeam = async (teamData: any) => {
   try {
@@ -144,6 +144,7 @@ export const checkAdminStatus = async (userId: string) => {
 interface CreateRoomData {
   matchId: string;
   adminId: string;
+  adminUsername: string; // Add this field
   team1: {
     id: string;
     name: string;
@@ -165,16 +166,19 @@ export const createGameRoom = async (data: CreateRoomData) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      credentials: 'include'
     });
 
+    const result = await response.json();
+    
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to create room');
+      throw new Error(result.message || 'Failed to create room');
     }
 
-    return await response.json();
+    return result;
   } catch (error) {
+    console.error('API Error:', error);
     throw error;
   }
 };

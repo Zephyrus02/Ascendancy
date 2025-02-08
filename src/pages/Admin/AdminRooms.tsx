@@ -117,7 +117,7 @@ export function AdminRooms() {
   };
 
   const handleCreateRoom = async (match: Match) => {
-    if (!user?.id) {
+    if (!user?.id || !user?.username) {
       toast.error('Please ensure you are logged in');
       return;
     }
@@ -129,6 +129,7 @@ export function AdminRooms() {
       const newRoom = await createGameRoom({
         matchId: match._id,
         adminId: user.id,
+        adminUsername: user.username, // Add this line
         team1: {
           id: match.team1.id,
           name: match.team1.name,
@@ -145,11 +146,13 @@ export function AdminRooms() {
   
       setRooms([...rooms, newRoom]);
       setShowMatchSelection(false);
-      
       toast.success('Room created and notifications sent to team captains!');
     } catch (err) {
       console.error('Error creating room:', err);
-      toast.error('Failed to create room');
+      const errorMessage = err instanceof Error ? 
+        err.message : 
+        'Failed to create room. Please ensure team captains have valid email addresses.';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
