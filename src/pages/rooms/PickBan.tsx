@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react';
 import { getRoomStatus } from '../../services/api';
 import { MapPool } from '../../components/game/MapPool';
 import { valorantMaps } from '../../data/maps';
+import { toast } from 'react-hot-toast';
 
 interface RoomStatus {
   roomCode: string;
@@ -45,6 +46,7 @@ export function PickBan() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [maps, setMaps] = useState(valorantMaps);
+  const [showMapPool, setShowMapPool] = useState(false);
 
   const fetchRoomStatus = async () => {
     if (!roomCode) return;
@@ -71,6 +73,36 @@ export function PickBan() {
   // Separate effect for polling that doesn't affect loading state
   useEffect(() => {
     const interval = setInterval(fetchRoomStatus, 5000);
+    return () => clearInterval(interval);
+  }, [roomCode]);
+
+  // Update room status effect to handle pickBanState changes
+  useEffect(() => {
+    const fetchAndUpdateStatus = async () => {
+      if (!roomCode) return;
+
+      try {
+        const status = await getRoomStatus(roomCode);
+        setRoomStatus(status);
+        
+        // Check if pick/ban has started
+        if (status.pickBanState?.isStarted && !showMapPool) {
+          setShowMapPool(true);
+          toast.success('Map veto has started!');
+        }
+        
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching room status:', err);
+      }
+    };
+
+    // Initial fetch
+    fetchAndUpdateStatus();
+
+    // Poll for updates
+    const interval = setInterval(fetchAndUpdateStatus, 3000); // Poll every 3 seconds
+
     return () => clearInterval(interval);
   }, [roomCode]);
 
@@ -177,7 +209,7 @@ export function PickBan() {
         </div>
 
         {/* Map Pool - Only show when pick/ban has started */}
-        {isPickBanInProgress() ? (
+        {showMapPool ? (
           <MapPool
             maps={maps}
             disabled={true}
