@@ -21,7 +21,7 @@ interface Match {
 }
 
 export function Trending() {
-  const [activeTab, setActiveTab] = useState<'all' | 'upcoming' | 'results'>('all');
+  const [activeTab, setActiveTab] = useState<'upcoming' | 'results'>('upcoming');
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -34,15 +34,7 @@ export function Trending() {
       setIsLoading(true);
       const response = await fetch(`${import.meta.env.VITE_API_URL}/matches`);
       const data = await response.json();
-      
-      // Map backend status to frontend status
-      const mappedMatches = data.map((match: Match) => ({
-        ...match,
-        status: match.status === 'yet to start' ? 'upcoming' : 
-                match.status === 'ongoing' ? 'live' : 'completed'
-      }));
-      
-      setMatches(mappedMatches);
+      setMatches(data); // Store original status values
     } catch (error) {
       console.error('Error fetching matches:', error);
     } finally {
@@ -51,7 +43,6 @@ export function Trending() {
   };
 
   const filteredMatches = matches.filter(match => {
-    if (activeTab === 'all') return true;
     if (activeTab === 'upcoming') return match.status === 'yet to start';
     return match.status === 'completed';
   });
@@ -69,7 +60,7 @@ export function Trending() {
 
           {/* Tabs */}
           <div className="flex justify-center space-x-4 mb-12">
-            {(['all', 'upcoming', 'results'] as const).map((tab) => (
+            {(['upcoming', 'results'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
