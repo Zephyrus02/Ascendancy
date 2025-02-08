@@ -48,6 +48,7 @@ export function PickBan() {
   const [error, setError] = useState<string | null>(null);
   const [maps, setMaps] = useState(valorantMaps);
   const [showMapPool, setShowMapPool] = useState(false);
+  const [hasShownStartNotification, setHasShownStartNotification] = useState(false);
 
   useEffect(() => {
     const fetchAndUpdateStatus = async () => {
@@ -64,7 +65,12 @@ export function PickBan() {
             ...map,
             status: status.pickBanState?.mapStatuses?.[map.id] || 'available'
           })));
-          toast.success('Map veto has started!');
+          
+          // Only show toast if we haven't shown it before
+          if (!hasShownStartNotification) {
+            toast.success('Map veto has started!');
+            setHasShownStartNotification(true);
+          }
         }
         
         setError(null);
@@ -82,7 +88,7 @@ export function PickBan() {
     // Poll more frequently (every 2 seconds)
     const interval = setInterval(fetchAndUpdateStatus, 2000);
     return () => clearInterval(interval);
-  }, [roomCode, showMapPool]);
+  }, [roomCode, showMapPool, hasShownStartNotification]);
 
   const allPlayersJoined = roomStatus?.team1.joined && 
                           roomStatus?.team2.joined && 
