@@ -354,3 +354,23 @@ export const banMap = async (roomCode: string, mapId: string) => {
     throw error;
   }
 };
+
+export const deleteRoom = async (roomCode: string) => {
+  try {
+    const response = await fetch(`${API_URL}/rooms/${roomCode}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to delete room');
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};

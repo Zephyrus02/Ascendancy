@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/layouts/AdminLayout';
-import { Search, Plus } from 'lucide-react';
-import { createGameRoom, getPendingMatches, getAllRooms, joinGameRoom } from '../../services/api';
+import { Search, Plus, Trash2 } from 'lucide-react'; // Add Trash2 import
+import { createGameRoom, getPendingMatches, getAllRooms, joinGameRoom, deleteRoom } from '../../services/api'; // Add deleteRoom import
 import { useUser } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -176,6 +176,19 @@ export function AdminRooms() {
     }
   };
 
+  const handleDeleteRoom = async (roomCode: string) => {
+    if (!confirm('Are you sure you want to delete this room?')) return;
+
+    try {
+      await deleteRoom(roomCode);
+      toast.success('Room deleted successfully');
+      // Update rooms list
+      setRooms(rooms.filter(room => room.roomCode !== roomCode));
+    } catch (error) {
+      toast.error('Failed to delete room');
+    }
+  };
+
   return (
     <AdminLayout>
       {/* Hero Section */}
@@ -300,9 +313,18 @@ export function AdminRooms() {
                   <h3 className="text-xl font-bold">Room Code: {room.roomCode}</h3>
                   <p className="text-sm text-gray-400 mt-1">Passkey: {room.roomPasskey}</p>
                 </div>
-                <span className="px-3 py-1 bg-[#FF4655] rounded-full text-sm">
-                  Active
-                </span>
+                <div className="flex items-center gap-4">
+                  <span className="px-3 py-1 bg-[#FF4655] rounded-full text-sm">
+                    Active
+                  </span>
+                  <button
+                    onClick={() => handleDeleteRoom(room.roomCode)}
+                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                    title="Delete Room"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-8 mb-6">
