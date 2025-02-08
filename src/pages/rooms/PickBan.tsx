@@ -49,65 +49,40 @@ export function PickBan() {
   const [maps, setMaps] = useState(valorantMaps);
   const [showMapPool, setShowMapPool] = useState(false);
 
-  const fetchRoomStatus = async () => {
-    if (!roomCode) return;
-
-    try {
-      const status = await getRoomStatus(roomCode);
-      setRoomStatus(status);
-      setError(null);
-    } catch (err) {
-      console.error('Error fetching room status:', err);
-    }
-  };
-
-  // Initial fetch on component mount
-  useEffect(() => {
-    const initialFetch = async () => {
-      setIsLoading(true);
-      await fetchRoomStatus();
-      setIsLoading(false);
-    };
-    initialFetch();
-  }, [roomCode]);
-
-  // Separate effect for polling that doesn't affect loading state
-  useEffect(() => {
-    const interval = setInterval(fetchRoomStatus, 5000);
-    return () => clearInterval(interval);
-  }, [roomCode]);
-
-  // Update room status effect to handle pickBanState changes
   useEffect(() => {
     const fetchAndUpdateStatus = async () => {
-      if (!roomCode) return;
-
       try {
+        if (!roomCode) return;
+        
         const status = await getRoomStatus(roomCode);
         setRoomStatus(status);
         
-        // Check if pick/ban has started and update UI accordingly
+        // Check if pick/ban has started
         if (status.pickBanState?.isStarted && !showMapPool) {
           setShowMapPool(true);
           setMaps(prevMaps => prevMaps.map(map => ({
             ...map,
-            status: status.pickBanState.mapStatuses?.[map.id] || 'available'
+            status: status.pickBanState?.mapStatuses?.[map.id] || 'available'
           })));
           toast.success('Map veto has started!');
         }
         
         setError(null);
+        setIsLoading(false);
       } catch (err) {
         console.error('Error fetching room status:', err);
+        setError('Failed to fetch room status');
+        setIsLoading(false);
       }
     };
 
+    // Initial fetch
     fetchAndUpdateStatus();
     
-    // Poll for updates more frequently during pick/ban
-    const interval = setInterval(fetchAndUpdateStatus, 2000); // Poll every 2 seconds
+    // Poll more frequently (every 2 seconds)
+    const interval = setInterval(fetchAndUpdateStatus, 2000);
     return () => clearInterval(interval);
-  }, [roomCode]);
+  }, [roomCode, showMapPool]);
 
   const allPlayersJoined = roomStatus?.team1.joined && 
                           roomStatus?.team2.joined && 
@@ -133,7 +108,7 @@ export function PickBan() {
   };
 
   const isPickBanInProgress = () => {
-    return roomStatus?.pickBanState?.isStarted && allPlayersJoined;
+    return Boolean(roomStatus?.pickBanState?.isStarted);
   };
 
   if (isLoading) {
@@ -212,8 +187,13 @@ export function PickBan() {
         </div>
 
         {/* Map Pool - Only show when pick/ban has started */}
-        {isPickBanInProgress() ? (
+        {isLoading ? (
+          <div className="text-center mt-12">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#FF4655]" />
+          </div>
+        ) : isPickBanInProgress() ? (
           <div className="mt-8 animate-fadeIn">
+            <h3 className="text-xl font-bold mb-4">Map Veto Phase</h3>
             <MapPool
               maps={maps}
               disabled={true}
