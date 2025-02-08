@@ -25,7 +25,7 @@ interface Team {
 interface TeamEditModalProps {
   team: Team;
   onClose: () => void;
-  onUpdate: () => void;
+  onUpdate: (updatedTeam?: Team) => void; // Update this line
 }
 
 export function TeamEditModal({ team, onClose, onUpdate }: TeamEditModalProps) {

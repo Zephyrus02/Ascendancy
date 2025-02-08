@@ -25,6 +25,13 @@ interface TeamMember {
   discordId: string;
 }
 
+const getActualMemberCount = (members: TeamMember[]) => {
+  return members.filter(member => 
+    member.role !== 'Substitute' || 
+    (member.name && member.valorantId && member.rank && member.discordId)
+  ).length;
+};
+
 export function ManageTeams() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
@@ -118,13 +125,14 @@ export function ManageTeams() {
                     <div>
                       <h3 className="font-bold">{team.teamName}</h3>
                       <p className="text-sm text-white/60">
-                        {team.members.length} Members • {team.verified ? 'Verified' : 'Unverified'}
+                        {getActualMemberCount(team.members)} Members • {team.verified ? 'Verified' : 'Unverified'}
                       </p>
                     </div>
                   </div>
                   <TeamActions
                     teamId={team._id}
                     verified={team.verified}
+                    isAdmin={true}
                     onUpdate={refreshTeams}
                     onEdit={() => {
                       setSelectedTeam(team);
@@ -146,10 +154,18 @@ export function ManageTeams() {
                     verified={selectedTeam.verified}
                   />
                   <StatCards 
-                    membersCount={selectedTeam.members.length}
+                    members={selectedTeam.members.filter(member => 
+                      member.role !== 'Substitute' || 
+                      (member.name && member.valorantId && member.rank && member.discordId)
+                    )}
                     teamRank={selectedTeam.members[0]?.rank || 'Unranked'}
                   />
-                  <TeamMembers members={selectedTeam.members} />
+                  <TeamMembers 
+                    members={selectedTeam.members.filter(member => 
+                      member.role !== 'Substitute' || 
+                      (member.name && member.valorantId && member.rank && member.discordId)
+                    )} 
+                  />
                 </div>
 
                 {showEditModal && (

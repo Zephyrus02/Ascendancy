@@ -1,5 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL;
-// const API_URL = import.meta.env.VITE_DEV_URL;
+// const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_DEV_URL;
 
 export const createTeam = async (teamData: any) => {
   try {
@@ -96,10 +96,11 @@ export const deleteTeam = async (teamId: string) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to delete team');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to delete team');
     }
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     throw error;
   }

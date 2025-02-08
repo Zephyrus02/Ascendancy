@@ -22,16 +22,24 @@ function StatCard({ icon: Icon, label, value }: StatCardProps) {
   );
 }
 
+interface TeamMember {
+  name: string;
+  valorantId: string;
+  rank: string;
+  role: 'Captain' | 'Main' | 'Substitute';
+  discordId: string;
+}
+
 interface StatCardsProps {
-  membersCount: number;
+  members: TeamMember[];
   teamRank: string;
 }
 
-export function StatCards({ membersCount, teamRank }: StatCardsProps) {
+export function StatCards({ members, teamRank }: StatCardsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
       <StatCard icon={Trophy} label="Matches" value="0" />
-      <StatCard icon={Users} label="Members" value={membersCount} />
+      <StatCard icon={Users} label="Members" value={members.length.toString()} />
       <StatCard icon={Shield} label="Team Rank" value={teamRank || 'Unranked'} />
       <StatCard icon={Target} label="Avg Score" value="N/A" />
     </div>

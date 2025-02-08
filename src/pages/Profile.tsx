@@ -6,11 +6,12 @@ import { TeamHeader } from '../components/team/TeamHeader';
 import { StatCards } from '../components/team/StatCards';
 import { TeamMembers } from '../components/team/TeamMembers';
 import { X } from 'lucide-react';
-import { TeamBasicInfo } from '../components/team/TeamBasicInfo';
-import { TeamMemberForm } from '../components/team/TeamMemberForm';
+import { TeamEditModal } from '../components/team/TeamEditModal';
 import { TeamHero } from '../components/team/TeamHero';
 import { ClipLoader } from 'react-spinners';
 import { createOrder, verifyPayment, deleteTeam } from '../services/api';
+import { Edit2, Shield, Trash2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 interface Team {
   _id: string;
@@ -27,126 +28,6 @@ interface TeamMember {
   rank: string;
   role: 'Captain' | 'Main' | 'Substitute';
   discordId: string;
-}
-
-interface EditModalProps {
-  team: Team;
-  onClose: () => void;
-  onSave: (updatedTeam: Team) => void;
-}
-
-const initialMemberState: TeamMember = {
-  name: '',
-  valorantId: '',
-  rank: '',
-  role: 'Substitute',
-  discordId: ''
-};
-
-function EditModal({ team, onClose, onSave }: EditModalProps) {
-  const [editedTeam, setEditedTeam] = useState({
-    ...team,
-    members: [...team.members, ...Array(7 - team.members.length).fill(initialMemberState)]
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-
-      const validMembers = editedTeam.members.filter((member, index) => {
-        if (index < 5) return true;
-        return member.name.trim() !== '';
-      });
-
-      const teamPayload = {
-        ...editedTeam,
-        members: validMembers
-      };
-
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/teams/${team._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(teamPayload)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update team');
-      }
-
-      const updatedTeam = await response.json();
-      
-      onSave(updatedTeam);
-      onClose();
-    } catch (error) {
-      console.error('Update error:', error);
-      alert(error instanceof Error ? error.message : 'Failed to update team');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-      <div className="bg-[#1a1a1a] p-8 rounded-lg max-w-4xl w-full mx-4 my-8 max-h-[90vh] flex flex-col">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Edit Team</h2>
-          <button onClick={onClose} className="text-white/60 hover:text-white">
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-8 overflow-y-auto pr-4 flex-1 custom-scrollbar">
-          <TeamBasicInfo 
-            teamData={editedTeam}
-            setTeamData={setEditedTeam}
-          />
-
-          <div className="space-y-6">
-            {editedTeam.members.map((member, index) => (
-              <TeamMemberForm
-                key={index}
-                memberIndex={index}
-                member={member}
-                setTeamData={setEditedTeam}
-                isCaptain={index === 0}
-                isRequired={index < 5}
-              />
-            ))}
-          </div>
-
-          <div className="flex justify-end space-x-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-2 bg-gray-600 hover:bg-gray-700 transition-colors rounded"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-6 py-2 bg-[#FF4655] hover:bg-[#ff5e6b] transition-colors rounded disabled:opacity-50"
-            >
-              {isSubmitting ? (
-                <div className="flex items-center justify-center">
-                  <ClipLoader size={20} color="#ffffff" className="mr-2" />
-                  Saving...
-                </div>
-              ) : (
-                'Save Changes'
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
 }
 
 // Add PaymentModal component
@@ -229,103 +110,64 @@ export function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
 
-  useEffect(() => {
-    const fetchTeam = async () => {
-      if (!user?.id) return;
+  // Move fetchTeam outside useEffect
+  const fetchTeam = async () => {
+    if (!user?.id) {
+      setIsLoading(false);
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/teams/user/${user.id}`);
       
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/teams/user/${user.id}`);
-        
-        if (!response.ok) {
-          throw new Error("You haven't created a team yet. Create your team to participate in tournaments.");
+      if (!response.ok) {
+        if (response.status === 404) {
+          setTeam(null);
+        } else {
+          throw new Error('Failed to fetch team data');
         }
-        
-        const data = await response.json();
-        setTeam(data);
-      } catch (err) {
-        console.error('Error:', err); // Debug log
-        setError('Failed to fetch team');
-      } finally {
-        setIsLoading(false);
+        return;
       }
-    };
+      
+      const data = await response.json();
+      setTeam(data);
+    } catch (err) {
+      console.error('Error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch team');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  // Add handleDeleteTeam function in the Profile component
+  const handleDeleteTeam = async () => {
+    if (!team) return;
+    
+    if (!window.confirm('Are you sure you want to delete your team? This action cannot be undone.')) {
+      return;
+    }
+  
+    try {
+      await deleteTeam(team._id);
+      toast.success('Team deleted successfully');
+      setTeam(null);
+    } catch (error) {
+      toast.error('Failed to delete team');
+    }
+  };
+
+  // Update useEffect to use the new fetchTeam function
+  useEffect(() => {
     fetchTeam();
   }, [user]);
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
-  const handleSave = (updatedTeam: Team) => {
-    setTeam(updatedTeam);
-  };
-
-  const handleVerifyTeam = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/teams/${team?._id}/verify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to verify team');
-      }
-
-      const updatedTeam = await response.json();
-      setTeam(updatedTeam);
-      setShowPayment(false);
-    } catch (error) {
-      console.error('Error verifying team:', error);
-    }
-  };
-
-  const handleDeleteTeam = async () => {
-    if (!team?._id) return;
-    
-    if (window.confirm('Are you sure you want to delete your team? This action cannot be undone.')) {
-      try {
-        await deleteTeam(team._id);
-        setTeam(null);
-      } catch (error) {
-        alert('Failed to delete team');
-      }
-    }
-  };
-
-  if (isLoading) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-[#111] text-white">
         <Navbar />
-        <TeamHero />
-        <div className="flex justify-center items-center h-[60vh]">
-          <ClipLoader color="#FF4655" size={40} />
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (!team) {
-    return (
-      <div className="min-h-screen bg-[#111] text-white">
-        <Navbar />
-        <TeamHero />
-        <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
-          <h2 className="text-2xl font-bold mb-4 text-center">
-            No Team Found
-          </h2>
-          <p className="text-white/60 mb-8 text-center max-w-md">
-            Create your team to participate in tournaments and manage your roster.
-          </p>
-          <a 
-            href="/create-team" 
-            className="px-8 py-3 bg-[#FF4655] hover:bg-[#ff5e6b] transition-colors"
-          >
-            Create Team
-          </a>
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <h2 className="text-2xl font-bold mb-4">Please Sign In</h2>
+          <p className="text-white/60">You need to be signed in to view your profile</p>
         </div>
         <Footer />
       </div>
@@ -338,9 +180,15 @@ export function Profile() {
       <TeamHero />
       
       <div className="max-w-7xl mx-auto px-4 py-24">
-        {isLoading && <div className="text-center">Loading...</div>}
-        {error && <div className="text-center text-red-500">{error}</div>}
-        {!isLoading && !error && !team && (
+        {isLoading ? (
+          <div className="flex justify-center items-center h-[40vh]">
+            <ClipLoader color="#FF4655" size={40} />
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-red-500">{error}</p>
+          </div>
+        ) : !team ? (
           <div className="flex flex-col items-center justify-center py-16">
             <h2 className="text-2xl font-bold mb-4">No Team Found</h2>
             <p className="text-white/60 mb-8 text-center max-w-md">
@@ -348,84 +196,81 @@ export function Profile() {
             </p>
             <a 
               href="/create-team" 
-              className="px-8 py-3 bg-[#FF4655] hover:bg-[#ff5e6b] transition-colors"
+              className="px-8 py-3 bg-[#FF4655] hover:bg-[#ff5e6b] transition-colors rounded"
             >
               Create Your Team
             </a>
           </div>
-        )}
-        {!isLoading && !error && team && (
+        ) : (
           <>
-            <div className="flex justify-between items-start mb-8">
-              <TeamHeader 
-                teamName={team.teamName}
-                teamLogo={team.teamLogo}
-                verified={team.verified}
+            <div className="space-y-8">
+              <div className="flex justify-between items-center">
+                <TeamHeader 
+                  teamName={team.teamName}
+                  teamLogo={team.teamLogo}
+                  verified={team.verified}
+                />
+                {!team.verified && (
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="px-6 py-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white/80 
+                              hover:text-white transition-colors rounded-lg flex items-center gap-2"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                      Edit Team
+                    </button>
+                    <button
+                      onClick={handleDeleteTeam}
+                      className="px-6 py-2 bg-[#1a1a1a] hover:bg-red-500/20 text-white/80 
+                              hover:text-red-500 transition-colors rounded-lg flex items-center gap-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete Team
+                    </button>
+                    <button
+                      onClick={() => setShowPayment(true)}
+                      className="px-6 py-2 bg-[#FF4655] hover:bg-[#ff5e6b] 
+                              transition-colors rounded-lg flex items-center gap-2"
+                    >
+                      <Shield className="w-4 h-4" />
+                      Verify Team
+                    </button>
+                  </div>
+                )}
+              </div>
+              <StatCards 
+                members={team.members}
+                teamRank={team.members[0]?.rank || 'Unranked'}
               />
-              {!team.verified && (
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => setShowPayment(true)}
-                    className="relative px-8 py-3 bg-[#FF4655] transform skew-x-[-20deg] 
-                              overflow-hidden transition-all duration-300 
-                              hover:bg-[#ff5e6b] hover:scale-105"
-                  >
-                    <span className="relative z-20 block text-white font-medium 
-                                  tracking-wider transform skew-x-[20deg]">
-                      VERIFY TEAM
-                    </span>
-                  </button>
-                  
-                  <button
-                    onClick={handleEditClick}
-                    className="relative px-8 py-3 border-2 border-[#FF4655] transform skew-x-[-20deg]
-                              overflow-hidden transition-all duration-300
-                              hover:bg-[#FF4655]/10"
-                  >
-                    <span className="relative z-20 block text-white font-medium 
-                                  tracking-wider transform skew-x-[20deg]">
-                      EDIT TEAM
-                    </span>
-                  </button>
-
-                  <button
-                    onClick={handleDeleteTeam}
-                    className="relative px-8 py-3 border-2 border-red-600 transform skew-x-[-20deg]
-                              overflow-hidden transition-all duration-300
-                              hover:bg-red-600/10 text-red-600 hover:text-red-500"
-                  >
-                    <span className="relative z-20 block font-medium 
-                                  tracking-wider transform skew-x-[20deg]">
-                      DELETE TEAM
-                    </span>
-                  </button>
-                </div>
-              )}
+              <TeamMembers members={team.members} />
             </div>
-            <StatCards 
-              membersCount={team.members.length} 
-              teamRank={team.members[0]?.rank || 'Unranked'} 
-            />
-            <TeamMembers members={team.members} />
 
+            {/* Modals */}
             {isEditing && (
-              <EditModal 
+              <TeamEditModal
                 team={team}
                 onClose={() => setIsEditing(false)}
-                onSave={handleSave}
+                onUpdate={() => {
+                  fetchTeam(); // Now fetchTeam is accessible here
+                  setIsEditing(false);
+                }}
               />
             )}
 
             {showPayment && (
-              <PaymentModal 
+              <PaymentModal
                 onClose={() => setShowPayment(false)}
-                onSuccess={handleVerifyTeam}
+                onSuccess={() => {
+                  setShowPayment(false);
+                  // Refresh team data to show verified status
+                  window.location.reload();
+                }}
               />
             )}
           </>
         )}
       </div>
-
       <Footer />
     </div>
   );
