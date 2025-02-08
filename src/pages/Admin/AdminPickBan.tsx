@@ -74,7 +74,7 @@ export function AdminPickBan() {
   const getStatusMessage = () => {
     if (allPlayersJoined) {
       return {
-        title: "Map Pick/Ban Phase",
+        title: "Map VETO",
         description: "Starting the map selection process..."
       };
     }

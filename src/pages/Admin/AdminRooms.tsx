@@ -124,7 +124,7 @@ export function AdminRooms() {
   
     try {
       const newRoom = await createGameRoom({
-        matchId: match._id,
+        matchId: match._id, // Make sure this is included
         adminId: user.id,
         team1: {
           id: match.team1.id,
@@ -143,13 +143,7 @@ export function AdminRooms() {
       setRooms([...rooms, newRoom]);
       setShowMatchSelection(false);
       
-      toast.success('Room created successfully!', {
-        style: {
-          background: '#1a1a1a',
-          color: '#fff',
-          border: '1px solid #FF4655'
-        }
-      });
+      toast.success('Room created successfully!');
     } catch (err) {
       console.error('Error creating room:', err);
       toast.error('Failed to create room');
@@ -184,38 +178,52 @@ export function AdminRooms() {
 
   return (
     <AdminLayout>
-      <div className="p-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-4">
-            GAME <span className="text-[#FF4655]">ROOMS</span>
-          </h2>
-          
-          <div className="flex items-center justify-between">
-            <div className="relative w-full md:w-96">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search rooms..."
-                className="w-full bg-[#1a1a1a] text-white border border-gray-800 py-3 px-4 pl-12
-                         focus:outline-none focus:border-[#FF4655]"
-              />
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60" />
-            </div>
-
-            <button
-              onClick={() => setShowMatchSelection(true)}
-              className="relative px-8 py-3 bg-[#FF4655] transform skew-x-[-20deg]
-                       overflow-hidden transition-all duration-300 ml-4
-                       hover:bg-[#ff5e6b]"
-            >
-              <span className="relative z-20 block text-white font-medium
-                           transform skew-x-[20deg] flex items-center">
-                <Plus className="w-5 h-5 mr-2" />
-                Create Room
-              </span>
-            </button>
+      {/* Hero Section */}
+      <div className="w-full">
+        <div className="relative h-[40vh] w-full bg-cover bg-center flex items-center justify-center"
+             style={{ 
+               backgroundImage: 'url(https://images.contentstack.io/v3/assets/bltb6530b271fddd0b1/blt44fe89b501153d99/641221da03a4d25fbfa85fde/Val_Episode6-2_16x9.jpg)'
+             }}>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-[#111]" />
+          <div className="relative z-10 text-center space-y-4 px-4">
+            <h1 className="text-4xl md:text-6xl font-bold text-white">
+              GAME <span className="text-[#FF4655]">ROOMS</span>
+            </h1>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              Create and manage tournament rooms for competitive matches
+            </p>
           </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="p-8">
+        {/* Remove the existing header since it's now in the hero section */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="relative w-full md:w-96">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search rooms..."
+              className="w-full bg-[#1a1a1a] text-white border border-gray-800 py-3 px-4 pl-12
+                       focus:outline-none focus:border-[#FF4655]"
+            />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60" />
+          </div>
+
+          <button
+            onClick={() => setShowMatchSelection(true)}
+            className="relative px-8 py-3 bg-[#FF4655] transform skew-x-[-20deg]
+                     overflow-hidden transition-all duration-300 ml-4
+                     hover:bg-[#ff5e6b]"
+          >
+            <span className="relative z-20 block text-white font-medium
+                         transform skew-x-[20deg] flex items-center">
+              <Plus className="w-5 h-5 mr-2" />
+              Create Room
+            </span>
+          </button>
         </div>
 
         {/* Match Selection Modal */}

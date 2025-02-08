@@ -313,3 +313,44 @@ export const getPendingMatches = async () => {
     throw error;
   }
 };
+
+export const startPickBan = async (roomCode: string) => {
+  try {
+    const response = await fetch(`${API_URL}/rooms/${roomCode}/start-pickban`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to start pick/ban');
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const banMap = async (roomCode: string, mapId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/rooms/${roomCode}/ban-map`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ mapId })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to ban map');
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};

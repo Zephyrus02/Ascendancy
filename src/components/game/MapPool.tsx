@@ -1,4 +1,5 @@
 import { Map } from '../../data/maps';
+import { Separator } from '../Separator';
 
 interface MapStatus {
   [key: string]: 'available' | 'picked' | 'banned';
@@ -16,8 +17,9 @@ export function MapPool({ maps, isAdmin, onMapSelect, disabled, mapStatuses }: M
   return (
     <div className="mt-12">
       <h3 className="text-2xl font-bold text-center mb-8">
-        SELECT <span className="text-[#FF4655]">MAP</span>
+        MAP <span className="text-[#FF4655]">VETO</span>
       </h3>
+    <Separator />
 
       <div className="flex h-[600px] gap-1">
         {maps.map((map) => (

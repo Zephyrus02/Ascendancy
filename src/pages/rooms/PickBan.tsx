@@ -29,6 +29,12 @@ interface RoomStatus {
     captainUsername: string;
     joined: boolean;
   };
+  pickBanState: {
+    isStarted: boolean;
+    currentTurn: string;
+    remainingMaps: string[];
+    selectedMap?: string;
+  };
 }
 
 export function PickBan() {
