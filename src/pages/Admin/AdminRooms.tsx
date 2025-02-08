@@ -78,7 +78,10 @@ export function AdminRooms() {
     try {
       setIsLoading(true);
       const pendingMatches = await getPendingMatches();
-      setFilteredMatches(pendingMatches);
+      const yetToStartMatches = pendingMatches.filter(
+        (match: Match) => match.status === 'yet to start'
+      );
+      setFilteredMatches(yetToStartMatches);
     } catch (error) {
       console.error('Error fetching matches:', error);
       toast.error('Failed to fetch matches', {
@@ -124,7 +127,7 @@ export function AdminRooms() {
   
     try {
       const newRoom = await createGameRoom({
-        matchId: match._id, // Make sure this is included
+        matchId: match._id,
         adminId: user.id,
         team1: {
           id: match.team1.id,
@@ -268,34 +271,43 @@ export function AdminRooms() {
 
               {/* Matches List */}
               <div className="space-y-4">
-                {filteredMatches
-                  .filter(match => 
-                    match.team1.name.toLowerCase().includes(matchSearchQuery.toLowerCase()) ||
-                    match.team2.name.toLowerCase().includes(matchSearchQuery.toLowerCase())
-                  )
-                  .map((match) => (
-                    <button
-                      key={match._id}  // Use _id instead of id
-                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                        e.preventDefault();
-                        handleCreateRoom(match);
-                      }}
-                      disabled={isLoading}
-                      className="w-full p-4 bg-[#111] hover:bg-[#FF4655]/10 transition-colors
-                               border-2 border-transparent hover:border-[#FF4655] rounded-lg text-left
-                               disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p className="font-medium">{match.team1.name} vs {match.team2.name}</p>
-                          <p className="text-sm text-white/60">
-                            Round {match.round} • {match.date} • {match.time}
-                          </p>
+                {filteredMatches.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-400">No matches available</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      All matches have either started or been completed
+                    </p>
+                  </div>
+                ) : (
+                  filteredMatches
+                    .filter(match => 
+                      match.team1.name.toLowerCase().includes(matchSearchQuery.toLowerCase()) ||
+                      match.team2.name.toLowerCase().includes(matchSearchQuery.toLowerCase())
+                    )
+                    .map((match) => (
+                      <button
+                        key={match._id}  // Use _id instead of id
+                        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                          e.preventDefault();
+                          handleCreateRoom(match);
+                        }}
+                        disabled={isLoading}
+                        className="w-full p-4 bg-[#111] hover:bg-[#FF4655]/10 transition-colors
+                                 border-2 border-transparent hover:border-[#FF4655] rounded-lg text-left
+                                 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="font-medium">{match.team1.name} vs {match.team2.name}</p>
+                            <p className="text-sm text-white/60">
+                              Round {match.round} • {match.date} • {match.time}
+                            </p>
+                          </div>
+                          <span className="text-[#FF4655]">Create Room →</span>
                         </div>
-                        <span className="text-[#FF4655]">Create Room →</span>
-                      </div>
-                    </button>
-                  ))}
+                      </button>
+                    ))
+                )}
               </div>
             </div>
           </div>

@@ -154,7 +154,7 @@ export function AdminPickBan() {
                   className="w-full px-4 py-2 bg-[#FF4655] rounded hover:bg-[#ff5e6b] transition-colors disabled:opacity-50"
                   disabled={!allPlayersJoined}
                 >
-                  Start Pick/Ban
+                  Start Map Veto
                 </button>
                 <button
                   className="w-full px-4 py-2 bg-gray-800 rounded hover:bg-gray-700 transition-colors"
