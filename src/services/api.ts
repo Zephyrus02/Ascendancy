@@ -23,15 +23,14 @@ export const createTeam = async (teamData: any) => {
   }
 };
 
-export const createUserProfile = async (userId: string, username: string) => {
+export const createUserProfile = async (userId: string, username: string, email: string) => {
   try {
-    
     const response = await fetch(`${API_URL}/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userId, username })
+      body: JSON.stringify({ userId, username, email })
     });
 
     const data = await response.json();

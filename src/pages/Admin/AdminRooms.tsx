@@ -146,7 +146,7 @@ export function AdminRooms() {
       setRooms([...rooms, newRoom]);
       setShowMatchSelection(false);
       
-      toast.success('Room created successfully!');
+      toast.success('Room created and notifications sent to team captains!');
     } catch (err) {
       console.error('Error creating room:', err);
       toast.error('Failed to create room');

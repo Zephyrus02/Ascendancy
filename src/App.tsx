@@ -29,9 +29,13 @@ export default function App() {
 
   useEffect(() => {
     const createUser = async () => {
-      if (user?.id && user?.username) {
+      if (user?.id && user?.username && user?.emailAddresses?.[0]?.emailAddress) {
         try {
-          await createUserProfile(user.id, user.username);
+          await createUserProfile(
+            user.id, 
+            user.username,
+            user.emailAddresses[0].emailAddress
+          );
         } catch (error) {
           console.error('Error creating user profile:', error);
         }
