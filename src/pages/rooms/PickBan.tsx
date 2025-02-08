@@ -34,6 +34,7 @@ interface RoomStatus {
     currentTurn: string;
     remainingMaps: string[];
     selectedMap?: string;
+    mapStatuses?: any;
   };
 }
 
@@ -78,16 +79,26 @@ export function PickBan() {
                           roomStatus?.adminJoined;
 
   const getStatusMessage = () => {
-    if (allPlayersJoined) {
+    if (!allPlayersJoined) {
       return {
         title: "Map Pick/Ban Phase",
-        description: "Starting the map selection process..."
+        description: "Waiting for all players to join before starting the map selection"
+      };
+    }
+    if (!roomStatus?.pickBanState?.isStarted) {
+      return {
+        title: "Map Pick/Ban Phase",
+        description: "Waiting for admin to start the map selection process..."
       };
     }
     return {
       title: "Map Pick/Ban Phase",
-      description: "Waiting for all players to join before starting the map selection"
+      description: "Map selection in progress..."
     };
+  };
+
+  const isPickBanInProgress = () => {
+    return roomStatus?.pickBanState?.isStarted && allPlayersJoined;
   };
 
   if (isLoading) {
@@ -165,23 +176,25 @@ export function PickBan() {
           </div>
         </div>
 
-        {/* Map Pool */}
-        {allPlayersJoined && (
+        {/* Map Pool - Only show when pick/ban has started */}
+        {isPickBanInProgress() ? (
           <MapPool
             maps={maps}
             disabled={true}
+            mapStatuses={roomStatus?.pickBanState?.mapStatuses}
           />
-        )}
-
-        {/* Waiting Message */}
-        {!allPlayersJoined && (
+        ) : (
           <div className="text-center mt-12 space-y-4">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#FF4655]" />
             <p className="text-gray-400">
-              Waiting for all players to join...
+              {!allPlayersJoined 
+                ? "Waiting for all players to join..." 
+                : "Waiting for admin to start map veto..."}
             </p>
             <p className="text-sm text-gray-500">
-              The pick/ban phase will begin once everyone is ready
+              {!allPlayersJoined
+                ? "The pick/ban phase will begin once everyone is ready"
+                : "The admin will start the map veto process shortly"}
             </p>
           </div>
         )}

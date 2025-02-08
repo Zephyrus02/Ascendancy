@@ -4,9 +4,10 @@ import { useUser } from '@clerk/clerk-react';
 import { AdminLayout } from '../../components/layouts/AdminLayout';
 import { Separator } from '../../components/Separator';
 import { Loader2 } from 'lucide-react';
-import { getRoomStatus } from '../../services/api';
+import { getRoomStatus, startPickBan } from '../../services/api';
 import { MapPool } from '../../components/game/MapPool';
 import { valorantMaps } from '../../data/maps';
+import { toast } from 'react-hot-toast';
 
 interface RoomStatus {
   roomCode: string;
@@ -84,8 +85,17 @@ export function AdminPickBan() {
     };
   };
 
-  const handleStartPickBan = () => {
-    setPickBanStarted(true);
+  const handleStartPickBan = async () => {
+    try {
+      if (!roomCode) return;
+      
+      await startPickBan(roomCode);
+      setPickBanStarted(true);
+      toast.success('Map veto process started!');
+    } catch (error) {
+      console.error('Error starting pick/ban:', error);
+      toast.error('Failed to start map veto process');
+    }
   };
 
   const handleMapSelect = (mapId: string) => {
