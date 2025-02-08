@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { TeamHeader } from '../../components/team/TeamHeader';
 import { StatCards } from '../../components/team/StatCards';
 import { TeamMembers } from '../../components/team/TeamMembers';
+import { TeamActions } from '../../components/team/TeamActions';
+import { TeamEditModal } from '../../components/team/TeamEditModal';
 import { ClipLoader } from 'react-spinners';
 import { Search } from 'lucide-react';
 import { AdminLayout } from '../../components/layouts/AdminLayout';
@@ -28,6 +30,7 @@ export function ManageTeams() {
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -45,7 +48,22 @@ export function ManageTeams() {
     fetchTeams();
   }, []);
 
-  const filteredTeams = teams.filter(team => 
+  const refreshTeams = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/teams`);
+      const data = await response.json();
+      setTeams(data);
+      
+      if (selectedTeam) {
+        const updatedTeam = data.find((team: Team) => team._id === selectedTeam._id);
+        setSelectedTeam(updatedTeam || null);
+      }
+    } catch (error) {
+      console.error('Error fetching teams:', error);
+    }
+  };
+
+  const filteredTeams = teams.filter((team: Team) => 
     team.teamName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -64,8 +82,7 @@ export function ManageTeams() {
           <h2 className="text-3xl font-bold mb-4">
             MANAGE <span className="text-[#FF4655]">TEAMS</span>
           </h2>
-          
-          {/* Search Bar */}
+
           <div className="relative w-full md:w-96">
             <input
               type="text"
@@ -80,7 +97,6 @@ export function ManageTeams() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Teams List */}
           <div className="lg:col-span-1 space-y-4 h-[calc(100vh-12rem)] overflow-y-auto pr-4">
             {filteredTeams.map((team) => (
               <button
@@ -92,38 +108,58 @@ export function ManageTeams() {
                            'border-[#FF4655]' : 
                            'border-transparent hover:border-[#FF4655]/50'}`}
               >
-                <div className="flex items-center gap-4">
-                  <img 
-                    src={team.teamLogo} 
-                    alt={team.teamName} 
-                    className="w-12 h-12 object-contain"
-                  />
-                  <div>
-                    <h3 className="font-bold">{team.teamName}</h3>
-                    <p className="text-sm text-white/60">
-                      {team.members.length} Members • {team.verified ? 'Verified' : 'Unverified'}
-                    </p>
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-4">
+                    <img 
+                      src={team.teamLogo} 
+                      alt={team.teamName} 
+                      className="w-12 h-12 object-contain"
+                    />
+                    <div>
+                      <h3 className="font-bold">{team.teamName}</h3>
+                      <p className="text-sm text-white/60">
+                        {team.members.length} Members • {team.verified ? 'Verified' : 'Unverified'}
+                      </p>
+                    </div>
                   </div>
+                  <TeamActions
+                    teamId={team._id}
+                    verified={team.verified}
+                    onUpdate={refreshTeams}
+                    onEdit={() => {
+                      setSelectedTeam(team);
+                      setShowEditModal(true);
+                    }}
+                  />
                 </div>
               </button>
             ))}
           </div>
 
-          {/* Team Details */}
           <div className="lg:col-span-2">
             {selectedTeam ? (
-              <div className="space-y-8">
-                <TeamHeader 
-                  teamName={selectedTeam.teamName}
-                  teamLogo={selectedTeam.teamLogo}
-                  verified={selectedTeam.verified}
-                />
-                <StatCards 
-                  membersCount={selectedTeam.members.length}
-                  teamRank={selectedTeam.members[0]?.rank || 'Unranked'}
-                />
-                <TeamMembers members={selectedTeam.members} />
-              </div>
+              <>
+                <div className="space-y-8">
+                  <TeamHeader 
+                    teamName={selectedTeam.teamName}
+                    teamLogo={selectedTeam.teamLogo}
+                    verified={selectedTeam.verified}
+                  />
+                  <StatCards 
+                    membersCount={selectedTeam.members.length}
+                    teamRank={selectedTeam.members[0]?.rank || 'Unranked'}
+                  />
+                  <TeamMembers members={selectedTeam.members} />
+                </div>
+
+                {showEditModal && (
+                  <TeamEditModal
+                    team={selectedTeam}
+                    onClose={() => setShowEditModal(false)}
+                    onUpdate={refreshTeams}
+                  />
+                )}
+              </>
             ) : (
               <div className="h-full flex items-center justify-center text-white/60">
                 Select a team to view details

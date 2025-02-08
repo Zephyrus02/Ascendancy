@@ -105,6 +105,27 @@ export const deleteTeam = async (teamId: string) => {
   }
 };
 
+export const updateTeam = async (teamId: string, teamData: any) => {
+  try {
+    const response = await fetch(`${API_URL}/teams/${teamId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(teamData)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to update team');
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const checkAdminStatus = async (userId: string) => {
   try {
     const response = await fetch(`${API_URL}/users/${userId}`);
