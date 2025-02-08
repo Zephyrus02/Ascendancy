@@ -42,10 +42,23 @@ export function Trending() {
     }
   };
 
-  const filteredMatches = matches.filter(match => {
-    if (activeTab === 'upcoming') return match.status === 'yet to start';
-    return match.status === 'completed';
-  });
+  const filteredMatches = matches
+    .filter(match => {
+      if (activeTab === 'upcoming') return match.status === 'yet to start';
+      return match.status === 'completed';
+    })
+    .sort((a, b) => {
+      const dateA = new Date(`${a.date} ${a.time}`).getTime();
+      const dateB = new Date(`${b.date} ${b.time}`).getTime();
+      
+      // For upcoming matches: show soonest first
+      if (activeTab === 'upcoming') {
+        return dateA - dateB;
+      }
+      // For completed matches: show most recent first
+      return dateB - dateA;
+    })
+    .slice(0, 3); // Take only the first 3 matches after sorting
 
   return (
     <div className="bg-[#111] py-24">
