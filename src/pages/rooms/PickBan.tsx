@@ -35,6 +35,7 @@ interface RoomStatus {
     currentTurn: string;
     remainingMaps: string[];
     selectedMap?: string;
+    mapVetoStarted: boolean; // Add this field
     mapStatuses?: any;
   };
 }
@@ -85,8 +86,8 @@ export function PickBan() {
         const status = await getRoomStatus(roomCode);
         setRoomStatus(status);
         
-        // Check if pick/ban has started
-        if (status.pickBanState?.isStarted && !showMapPool) {
+        // Check if map veto has started
+        if (status.pickBanState?.mapVetoStarted && !showMapPool) {
           setShowMapPool(true);
           toast.success('Map veto has started!');
         }
@@ -101,10 +102,9 @@ export function PickBan() {
     fetchAndUpdateStatus();
 
     // Poll for updates
-    const interval = setInterval(fetchAndUpdateStatus, 3000); // Poll every 3 seconds
-
+    const interval = setInterval(fetchAndUpdateStatus, 3000);
     return () => clearInterval(interval);
-  }, [roomCode]);
+  }, [roomCode, showMapPool]); // Add showMapPool to dependencies
 
   const allPlayersJoined = roomStatus?.team1.joined && 
                           roomStatus?.team2.joined && 
@@ -130,7 +130,7 @@ export function PickBan() {
   };
 
   const isPickBanInProgress = () => {
-    return roomStatus?.pickBanState?.isStarted && allPlayersJoined;
+    return roomStatus?.pickBanState?.mapVetoStarted && allPlayersJoined;
   };
 
   if (isLoading) {
@@ -209,7 +209,7 @@ export function PickBan() {
         </div>
 
         {/* Map Pool - Only show when pick/ban has started */}
-        {showMapPool ? (
+        {isPickBanInProgress() ? (
           <MapPool
             maps={maps}
             disabled={true}
