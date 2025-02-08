@@ -5,8 +5,10 @@ import { TeamBasicInfo } from '../components/team/TeamBasicInfo';
 import { TeamMemberForm } from '../components/team/TeamMemberForm';
 import { Separator } from '../components/Separator';
 import { createTeam } from '../services/api';
-import { useUser } from '@clerk/clerk-react'; // Add this import
-import { ClipLoader } from 'react-spinners'; // Install this package: npm install react-spinners
+import { useUser } from '@clerk/clerk-react';
+import { ClipLoader } from 'react-spinners'; 
+import { useNavigate } from 'react-router-dom'; 
+import toast from 'react-hot-toast';
 
 interface TeamMember {
   name: string;
@@ -32,6 +34,7 @@ const initialMemberState: TeamMember = {
 
 export function CreateTeam() {
   const { user } = useUser();
+  const navigate = useNavigate(); // Add this hook
   const [teamData, setTeamData] = useState<TeamData>({
     teamName: '',
     teamLogo: null,
@@ -173,7 +176,9 @@ export function CreateTeam() {
           teamLogo: null,
           members: Array(7).fill({ ...initialMemberState })
         });
-        alert('Team created successfully!');
+        // Replace alert with toast and navigation
+        toast.success('Team created successfully!');
+        navigate('/profile');
       }
     } catch (error) {
       console.error('Form submission error:', error);
