@@ -1,66 +1,75 @@
+import { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { BracketRound } from '../components/brackets/BracketRound';
-import { useState } from 'react';
+import { getMatches } from '../services/api';
+import { ClipLoader } from 'react-spinners';
+import { Separator } from '../components/Separator';
 
 interface Match {
-  id: string;
+  _id: string;
   round: number;
-  status: string;
+  status: 'yet to start' | 'ongoing' | 'completed';
   team1: {
+    id: string;
     name: string;
     logo: string;
     score?: number;
   };
   team2: {
+    id: string;
     name: string;
     logo: string;
     score?: number;
   };
   date: string;
   time: string;
-  tournament: string;
 }
 
 export function Brackets() {
   const [view, setView] = useState<'schedule' | 'bracket'>('schedule');
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const matches: Match[] = [
-    {
-      id: '1',
-      round: 1,
-      status: 'upcoming',
-      team1: { 
-        name: 'TBD', 
-        logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-1.png',
-        score: 0 
-      },
-      team2: { 
-        name: 'TBD', 
-        logo: 'https://playerx.qodeinteractive.com/elementor/wp-content/uploads/2021/09/h1-client-img-2.png',
-        score: 0 
-      },
-      date: 'TBD',
-      time: 'TBD',
-      tournament: 'ASCENDANCY TOURNAMENT'
+  useEffect(() => {
+    fetchMatches();
+  }, []);
+
+  const fetchMatches = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getMatches();
+      setMatches(data);
+    } catch (error) {
+      console.error('Error fetching matches:', error);
+    } finally {
+      setIsLoading(false);
     }
-  ];
+  };
 
-  const round1 = [
-    { team1: 'TBD', team2: 'TBD' },
-    { team1: 'TBD', team2: 'TBD' },
-    { team1: 'TBD', team2: 'TBD' },
-    { team1: 'TBD', team2: 'TBD' }
-  ];
+  // Organize matches by round for bracket view
+  const getRoundMatches = (roundNumber: number) => {
+    return matches
+      .filter(match => match.round === roundNumber)
+      .map(match => ({
+        team1: match.team1.name,
+        team2: match.team2.name,
+        score1: match.team1.score,
+        score2: match.team2.score
+      }));
+  };
 
-  const round2 = [
-    { team1: 'TBD', team2: 'TBD' },
-    { team1: 'TBD', team2: 'TBD' }
-  ];
+  const round1 = getRoundMatches(1);
+  const round2 = getRoundMatches(2);
+  const finals = getRoundMatches(3);
 
-  const finals = [
-    { team1: 'TBD', team2: 'TBD' }
-  ];
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#111] text-white flex items-center justify-center">
+        <ClipLoader color="#FF4655" size={40} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#111] text-white">
@@ -126,11 +135,12 @@ export function Brackets() {
           <h2 className="text-3xl font-bold text-center mb-12">
             MATCH <span className="text-[#FF4655]">SCHEDULE</span>
           </h2>
+          <Separator />
           
           <div className="grid gap-6">
             {matches.map((match) => (
               <div 
-                key={match.id}
+                key={match._id}
                 className="relative group bg-[#1a1a1a] p-6 transform transition-all duration-300 
                          hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(255,70,85,0.15)]"
               >
@@ -172,11 +182,13 @@ export function Brackets() {
                   <div className="text-sm font-medium text-white">Round {match.round}</div>
                 </div>
 
-                {/* Time/Date */}
+                {/* Time/Date and Status */}
                 <div className="mt-4 flex items-center justify-center space-x-2 text-sm text-white/60">
                   <span>{match.time}</span>
                   <span>•</span>
                   <span>{match.date}</span>
+                  <span>•</span>
+                  <span className="capitalize">{match.status.replace(/-/g, ' ')}</span>
                 </div>
               </div>
             ))}

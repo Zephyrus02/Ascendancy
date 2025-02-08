@@ -312,13 +312,12 @@ export const createMatch = async (matchData: CreateMatchData) => {
 export const getMatches = async () => {
   try {
     const response = await fetch(`${API_URL}/matches`);
-    const data = await response.json();
     
     if (!response.ok) {
-      throw new Error(data.message || 'Failed to fetch matches');
+      throw new Error('Failed to fetch matches');
     }
 
-    return data;
+    return await response.json();
   } catch (error) {
     throw error;
   }
