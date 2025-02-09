@@ -5,10 +5,11 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { Separator } from '../../components/Separator';
 import { Loader2 } from 'lucide-react';
-import { getRoomStatus, banMap } from '../../services/api';
+import { getRoomStatus, banMap, selectSide } from '../../services/api';
 import { MapPool } from '../../components/game/MapPool';
 import { valorantMaps } from '../../data/maps';
 import { toast } from 'react-hot-toast';
+import { SideSelect } from '../../components/game/SideSelect';
 
 interface MapStatus {
   [key: string]: 'available' | 'picked' | 'banned';
@@ -164,6 +165,24 @@ export function PickBan() {
     }
   };
 
+  const handleSideSelect = async (side: 'attack' | 'defend') => {
+    try {
+      if (!roomCode || !roomStatus) return;
+
+      const userTeamId = getUserTeamId();
+      if (!userTeamId) {
+        toast.error('Not authorized to select side');
+        return;
+      }
+
+      await selectSide(roomCode, userTeamId, side);
+      toast.success('Side selected successfully');
+    } catch (error) {
+      console.error('Error selecting side:', error);
+      toast.error('Failed to select side');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#111] text-white flex items-center justify-center">
@@ -270,6 +289,14 @@ export function PickBan() {
                 : "The admin will start the map veto process shortly"}
             </p>
           </div>
+        )}
+
+        {roomStatus?.pickBanState?.selectedMap && (
+          <SideSelect
+            isUserTurn={isUserTurn()}
+            onSideSelect={handleSideSelect}
+            disabled={false}
+          />
         )}
       </div>
 
