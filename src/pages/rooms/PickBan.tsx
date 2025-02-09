@@ -5,7 +5,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { Separator } from '../../components/Separator';
 import { Loader2 } from 'lucide-react';
-import { getRoomStatus, banMap } from '../../services/api';
+import { getRoomStatus, banMap, selectSide } from '../../services/api';
 import { MapPool } from '../../components/game/MapPool';
 import { ValorantMap, valorantMaps } from '../../data/maps';
 import { toast } from 'react-hot-toast';
@@ -116,7 +116,7 @@ export function PickBan() {
         description: "Waiting for admin to start the map selection process..."
       };
     }
-    if (roomStatus?.pickBanState?.selectedMap) {
+    if (roomStatus?.pickBanState?.selectedMap && roomStatus?.pickBanState?.selectedSide) {
       return {
         title: "Match Setup Complete",
         description: "Map has been selected. You may now exit the room."
@@ -173,6 +173,31 @@ export function PickBan() {
       console.error('Error banning map:', error);
       toast.error('Failed to ban map');
     }
+  };
+
+  const handleSideSelect = async (side: 'attack' | 'defend') => {
+    try {
+      if (!roomCode || !roomStatus) return;
+
+      const userTeamId = getUserTeamId();
+      if (!userTeamId) {
+        toast.error('Not authorized to select side');
+        return;
+      }
+
+      await selectSide(roomCode, userTeamId, side);
+      toast.success('Side selected successfully');
+    } catch (error) {
+      console.error('Error selecting side:', error);
+      toast.error('Failed to select side');
+    }
+  };
+
+  const canSelectSide = () => {
+    if (!roomStatus || !user) return false;
+
+    const userTeamId = getUserTeamId();
+    return userTeamId === roomStatus.pickBanState?.firstPickTeam;
   };
 
   if (isLoading) {
@@ -283,7 +308,39 @@ export function PickBan() {
           </div>
         )}
 
-        {roomStatus?.pickBanState?.selectedMap && (
+        {roomStatus?.pickBanState?.selectedMap && !roomStatus?.pickBanState?.selectedSide && (
+          <div className="mt-8 animate-fadeIn">
+            <div className="bg-[#1a1a1a] p-8 rounded-lg border-2 border-[#FF4655]">
+              <h3 className="text-2xl font-bold text-center mb-4">
+                Side Selection Phase
+              </h3>
+              {canSelectSide() ? (
+                <div className="grid grid-cols-2 gap-8 mt-6">
+                  <button
+                    onClick={() => handleSideSelect('attack')}
+                    className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
+                  >
+                    <h4 className="text-xl font-bold mb-2">ATTACK</h4>
+                    <p className="text-gray-400">Start on attacking side</p>
+                  </button>
+                  <button
+                    onClick={() => handleSideSelect('defend')}
+                    className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
+                  >
+                    <h4 className="text-xl font-bold mb-2">DEFEND</h4>
+                    <p className="text-gray-400">Start on defending side</p>
+                  </button>
+                </div>
+              ) : (
+                <p className="text-gray-400 text-center">
+                  Waiting for opponent to select side...
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {roomStatus?.pickBanState?.selectedMap && roomStatus?.pickBanState?.selectedSide && (
           <div className="mt-8 text-center">
             <div className="bg-green-500/10 p-6 rounded-lg">
               <h3 className="text-xl font-bold text-green-500 mb-2">Match Setup Complete!</h3>
