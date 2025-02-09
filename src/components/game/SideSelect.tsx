@@ -3,7 +3,7 @@ import { Separator } from "../Separator";
 interface SideSelectProps {
   isUserTurn: boolean;
   onSideSelect: (side: 'attack' | 'defend') => void;
-  disabled?: boolean;
+  disabled: boolean;
 }
 
 export function SideSelect({ isUserTurn, onSideSelect, disabled }: SideSelectProps) {

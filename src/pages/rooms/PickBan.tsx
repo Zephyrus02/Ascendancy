@@ -42,6 +42,11 @@ interface RoomStatus {
     selectedMap?: string;
     mapVetoStarted: boolean;
     mapStatuses: MapStatus;
+    sideSelect?: {
+      isStarted: boolean;
+      currentTurn: string;
+      selectedSide?: 'attack' | 'defend';
+    };
   };
 }
 
@@ -183,6 +188,17 @@ export function PickBan() {
     }
   };
 
+  const isSideSelectInProgress = () => {
+    return Boolean(roomStatus?.pickBanState?.sideSelect?.isStarted);
+  };
+
+  const isSideSelectTurn = () => {
+    if (!roomStatus?.pickBanState?.sideSelect || !user) return false;
+    
+    const userTeamId = getUserTeamId();
+    return userTeamId === roomStatus.pickBanState.sideSelect.currentTurn;
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#111] text-white flex items-center justify-center">
@@ -297,6 +313,17 @@ export function PickBan() {
             onSideSelect={handleSideSelect}
             disabled={false}
           />
+        )}
+
+        {/* Show side selection when a map is selected and side select is initiated */}
+        {isSideSelectInProgress() && (
+          <div className="mt-8 animate-fadeIn">
+            <SideSelect
+              isUserTurn={isSideSelectTurn()}
+              onSideSelect={handleSideSelect}
+              disabled={!isSideSelectTurn()}
+            />
+          </div>
         )}
       </div>
 
