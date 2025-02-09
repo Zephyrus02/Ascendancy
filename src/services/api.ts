@@ -358,14 +358,14 @@ export const startPickBan = async (roomCode: string) => {
   }
 };
 
-export const banMap = async (roomCode: string, mapId: string) => {
+export const banMap = async (roomCode: string, mapId: string, teamId: string) => {
   try {
     const response = await fetch(`${API_URL}/rooms/${roomCode}/ban-map`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ mapId })
+      body: JSON.stringify({ mapId, teamId })
     });
 
     if (!response.ok) {

@@ -13,6 +13,13 @@ interface MapPoolProps {
   mapStatuses?: MapStatus;
   currentTurn?: string;
   userTeamId?: string;
+  roomStatus?: {
+    pickBanState?: {
+      selectedMap?: {
+        name: string;
+      };
+    };
+  };
 }
 
 export function MapPool({ 
@@ -22,7 +29,8 @@ export function MapPool({
   disabled, 
   mapStatuses,
   currentTurn,
-  userTeamId 
+  userTeamId,
+  roomStatus
 }: MapPoolProps) {
   const isUserTurn = currentTurn === userTeamId;
   
@@ -33,14 +41,19 @@ export function MapPool({
       </h3>
       <Separator />
 
-      {/* Current Turn Indicator */}
-      {currentTurn && (
-        <div className="text-center mb-4">
+      {/* Current Turn and Status */}
+      <div className="text-center mb-6">
+        {currentTurn && (
           <p className={`text-lg ${isUserTurn ? 'text-green-400' : 'text-gray-400'}`}>
-            {isUserTurn ? "Your turn to ban a map" : "Waiting for opponent to ban a map"}
+            {isUserTurn ? 'Your turn to ban a map' : 'Waiting for opponent to ban a map'}
           </p>
-        </div>
-      )}
+        )}
+        {roomStatus?.pickBanState?.selectedMap && (
+          <p className="text-green-400 mt-2">
+            Selected map: {roomStatus.pickBanState.selectedMap.name}
+          </p>
+        )}
+      </div>
 
       <div className="flex h-[600px] gap-1">
         {maps.map((map) => (
@@ -48,8 +61,14 @@ export function MapPool({
             key={map.id}
             className={`relative flex-1 transition-all duration-500 ease-in-out
                        group hover:flex-[2] overflow-hidden 
-                       ${(!isUserTurn || disabled) ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-            onClick={() => isUserTurn && !disabled && onMapSelect?.(map.id)}
+                       ${(!isUserTurn || disabled || mapStatuses?.[map.id] !== 'available') 
+                         ? 'cursor-not-allowed' 
+                         : 'cursor-pointer'}`}
+            onClick={() => {
+              if (isUserTurn && !disabled && mapStatuses?.[map.id] === 'available') {
+                onMapSelect?.(map.id);
+              }
+            }}
           >
             {/* Background Image Container */}
             <div className="absolute inset-0 w-[200%] h-full">

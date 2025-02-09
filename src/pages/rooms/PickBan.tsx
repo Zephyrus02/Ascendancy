@@ -5,7 +5,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { Separator } from '../../components/Separator';
 import { Loader2 } from 'lucide-react';
-import { getRoomStatus } from '../../services/api';
+import { getRoomStatus, banMap } from '../../services/api';
 import { MapPool } from '../../components/game/MapPool';
 import { valorantMaps } from '../../data/maps';
 import { toast } from 'react-hot-toast';
@@ -143,8 +143,25 @@ export function PickBan() {
         : undefined;
   };
 
-  const handleMapSelect = (mapId: string) => {
-    // Handle map selection logic here
+  const handleMapSelect = async (mapId: string) => {
+    try {
+      if (!roomCode || !roomStatus) return;
+
+      const userTeamId = getUserTeamId();
+      if (!userTeamId) {
+        toast.error('Not authorized to ban maps');
+        return;
+      }
+
+      // Call the API to ban the map
+      await banMap(roomCode, mapId, userTeamId);
+      
+      // Update will happen automatically through polling
+      toast.success('Map banned successfully');
+    } catch (error) {
+      console.error('Error banning map:', error);
+      toast.error('Failed to ban map');
+    }
   };
 
   if (isLoading) {
