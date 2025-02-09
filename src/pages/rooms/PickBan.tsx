@@ -177,7 +177,10 @@ export function PickBan() {
 
   const handleSideSelect = async (side: 'attack' | 'defend') => {
     try {
-      if (!roomCode || !roomStatus) return;
+      if (!roomCode || !roomStatus) {
+        toast.error('Room information not available');
+        return;
+      }
 
       const userTeamId = getUserTeamId();
       if (!userTeamId) {
@@ -190,6 +193,8 @@ export function PickBan() {
         return;
       }
 
+      console.log('Attempting side selection:', { roomCode, userTeamId, side }); // Add logging
+      
       await selectSide(roomCode, userTeamId, side);
       toast.success('Side selected successfully');
     } catch (error) {

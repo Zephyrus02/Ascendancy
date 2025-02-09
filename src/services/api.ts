@@ -401,6 +401,8 @@ export const deleteRoom = async (roomCode: string) => {
 
 export const selectSide = async (roomCode: string, teamId: string, side: 'attack' | 'defend') => {
   try {
+    console.log('Making side selection request:', { roomCode, teamId, side }); // Add logging
+    
     const response = await fetch(`${API_URL}/rooms/${roomCode}/select-side`, {
       method: 'POST',
       headers: {
@@ -416,6 +418,7 @@ export const selectSide = async (roomCode: string, teamId: string, side: 'attack
 
     return await response.json();
   } catch (error) {
+    console.error('Side selection error:', error);
     throw error;
   }
 };
