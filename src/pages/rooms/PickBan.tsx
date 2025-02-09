@@ -5,7 +5,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { Separator } from '../../components/Separator';
 import { Loader2 } from 'lucide-react';
-import { getRoomStatus, banMap, selectSide } from '../../services/api';
+import { getRoomStatus, banMap } from '../../services/api';
 import { MapPool } from '../../components/game/MapPool';
 import { ValorantMap, valorantMaps } from '../../data/maps';
 import { toast } from 'react-hot-toast';
@@ -118,8 +118,8 @@ export function PickBan() {
     }
     if (roomStatus?.pickBanState?.selectedMap) {
       return {
-        title: "Side Selection Phase",
-        description: "Map has been selected. Waiting for side selection..."
+        title: "Match Setup Complete",
+        description: "Map has been selected. You may now exit the room."
       };
     }
     return {
@@ -154,13 +154,6 @@ export function PickBan() {
         : undefined;
   };
 
-  const canSelectSide = () => {
-    if (!roomStatus || !user) return false;
-    const userTeamId = getUserTeamId();
-    // Team that didn't get first pick in map veto gets to pick side
-    return userTeamId && userTeamId !== roomStatus.pickBanState.firstPickTeam;
-  };
-
   const handleMapSelect = async (mapId: string) => {
     try {
       if (!roomCode || !roomStatus) return;
@@ -179,24 +172,6 @@ export function PickBan() {
     } catch (error) {
       console.error('Error banning map:', error);
       toast.error('Failed to ban map');
-    }
-  };
-
-  const handleSideSelect = async (side: 'attack' | 'defend') => {
-    try {
-      if (!roomCode || !roomStatus) return;
-
-      const userTeamId = getUserTeamId();
-      if (!userTeamId) {
-        toast.error('Not authorized to select side');
-        return;
-      }
-
-      await selectSide(roomCode, userTeamId, side);
-      toast.success('Side selected successfully');
-    } catch (error) {
-      console.error('Error selecting side:', error);
-      toast.error('Failed to select side');
     }
   };
 
@@ -305,40 +280,6 @@ export function PickBan() {
                 ? "The pick/ban phase will begin once everyone is ready"
                 : "The admin will start the map veto process shortly"}
             </p>
-          </div>
-        )}
-
-        {roomStatus?.pickBanState?.selectedMap && !roomStatus?.pickBanState?.selectedSide && (
-          <div className="mt-8 animate-fadeIn">
-            <div className="bg-[#1a1a1a] p-8 rounded-lg border-2 border-[#FF4655]">
-              <h3 className="text-2xl font-bold text-center mb-4">
-                {canSelectSide() ? 'Select Starting Side' : 'Waiting for Side Selection'}
-              </h3>
-              {canSelectSide() ? (
-                <div className="grid grid-cols-2 gap-8 mt-6">
-                  <button
-                    onClick={() => handleSideSelect('attack')}
-                    className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
-                  >
-                    <h4 className="text-xl font-bold mb-2">ATTACK</h4>
-                    <p className="text-gray-400">Start on attacking side</p>
-                  </button>
-                  <button
-                    onClick={() => handleSideSelect('defend')}
-                    className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
-                  >
-                    <h4 className="text-xl font-bold mb-2">DEFEND</h4>
-                    <p className="text-gray-400">Start on defending side</p>
-                  </button>
-                </div>
-              ) : (
-                <p className="text-gray-400 text-center">
-                  Waiting for {roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId 
-                    ? roomStatus.team1.teamName 
-                    : roomStatus.team2.teamName} to select their starting side...
-                </p>
-              )}
-            </div>
           </div>
         )}
 

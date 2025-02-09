@@ -398,24 +398,3 @@ export const deleteRoom = async (roomCode: string) => {
     throw error;
   }
 };
-
-export const selectSide = async (roomCode: string, teamId: string, side: 'attack' | 'defend') => {
-  try {
-    const response = await fetch(`${API_URL}/rooms/${roomCode}/select-side`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ teamId, side })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to select side');
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw error;
-  }
-};
