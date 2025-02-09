@@ -347,7 +347,7 @@ export function PickBan() {
           </div>
         )}
 
-        {roomStatus?.pickBanState?.selectedMap && roomStatus?.pickBanState?.selectedSide && (
+        {/* {roomStatus?.pickBanState?.selectedMap && roomStatus?.pickBanState?.selectedSide && (
           <div className="mt-8 text-center">
             <div className="bg-green-500/10 p-6 rounded-lg">
               <h3 className="text-xl font-bold text-green-500 mb-2">Match Setup Complete!</h3>
@@ -369,7 +369,7 @@ export function PickBan() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </div>
       <Footer />
     </div>
