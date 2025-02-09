@@ -162,8 +162,12 @@ export function PickBan() {
   const canSelectSide = () => {
     if (!roomStatus || !user) return false;
     const userTeamId = getUserTeamId();
-    // Team that didn't get first pick in map veto gets to pick side
-    return userTeamId && userTeamId !== roomStatus.pickBanState.firstPickTeam;
+    if (!userTeamId) return false;
+    
+    // Can select side if it's the team's turn and no side has been selected yet
+    return roomStatus.pickBanState.selectedMap && 
+           !roomStatus.pickBanState.selectedSide &&
+           roomStatus.pickBanState.currentTurn === userTeamId;
   };
 
   const handleMapSelect = async (mapId: string) => {
@@ -340,7 +344,7 @@ export function PickBan() {
                 <p className="text-gray-400 text-center">
                   Waiting for {roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId 
                     ? roomStatus.team1.teamName 
-                    : roomStatus.team2.teamName} to select their starting side...
+                    : roomStatus.team2.teamName} to select starting side...
                 </p>
               )}
             </div>
