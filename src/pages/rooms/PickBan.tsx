@@ -347,27 +347,6 @@ export function PickBan() {
           </div>
         )}
 
-        {roomStatus?.pickBanState?.selectedMap && roomStatus?.pickBanState?.selectedSide && (
-          <div className="mt-8 text-center">
-            <div className="bg-[#1a1a1a] p-6 rounded-lg">
-              <h3 className="text-xl font-bold mb-2">Match Setup Complete</h3>
-              <div className="mt-4 space-y-2">
-                <p className="text-gray-400">
-                  Selected Map: <span className="text-white">{roomStatus.pickBanState.selectedMap.name}</span>
-                </p>
-                <p className="text-gray-400">
-                  Starting Sides: <span className="text-white">
-                    {roomStatus.pickBanState.selectedSide.teamId === roomStatus.team1.teamId
-                      ? `${roomStatus.team1.teamName} (${roomStatus.pickBanState.selectedSide.side})`
-                      : `${roomStatus.team2.teamName} (${roomStatus.pickBanState.selectedSide.side})`
-                    }
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
       </div>
       <Footer />
     </div>
