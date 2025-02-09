@@ -185,6 +185,11 @@ export function PickBan() {
         return;
       }
 
+      if (!canSelectSide()) {
+        toast.error('Not your turn to select side');
+        return;
+      }
+
       await selectSide(roomCode, userTeamId, side);
       toast.success('Side selected successfully');
     } catch (error) {
@@ -198,10 +203,10 @@ export function PickBan() {
     const userTeamId = getUserTeamId();
     if (!userTeamId) return false;
     
-    // Can select side if it's this team's turn and no side has been selected yet
+    // The team that didn't get first pick (second team) gets to choose sides
     return roomStatus.pickBanState.selectedMap && 
            !roomStatus.pickBanState.selectedSide &&
-           userTeamId === roomStatus.pickBanState.currentTurn;
+           userTeamId !== roomStatus.pickBanState.firstPickTeam;
   };
 
   if (isLoading) {
@@ -344,9 +349,9 @@ export function PickBan() {
                 </>
               ) : (
                 <p className="text-gray-400 text-center">
-                  Waiting for {roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId 
-                    ? roomStatus.team1.teamName 
-                    : roomStatus.team2.teamName} to select starting side...
+                  Waiting for {getUserTeamId() === roomStatus.pickBanState.firstPickTeam 
+                    ? "opponent" 
+                    : "your team"} to select starting side...
                 </p>
               )}
             </div>
