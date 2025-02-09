@@ -164,10 +164,10 @@ export function PickBan() {
     const userTeamId = getUserTeamId();
     if (!userTeamId) return false;
     
-    // Can select side if it's the team's turn and no side has been selected yet
+    // Second pick team gets side selection (team that didn't get first pick in map veto)
     return roomStatus.pickBanState.selectedMap && 
            !roomStatus.pickBanState.selectedSide &&
-           roomStatus.pickBanState.currentTurn === userTeamId;
+           userTeamId !== roomStatus.pickBanState.firstPickTeam;
   };
 
   const handleMapSelect = async (mapId: string) => {
@@ -320,47 +320,65 @@ export function PickBan() {
         {roomStatus?.pickBanState?.selectedMap && !roomStatus?.pickBanState?.selectedSide && (
           <div className="mt-8 animate-fadeIn">
             <div className="bg-[#1a1a1a] p-8 rounded-lg border-2 border-[#FF4655]">
-              <h3 className="text-2xl font-bold text-center mb-4">
-                {canSelectSide() ? 'Select Starting Side' : 'Waiting for Side Selection'}
-              </h3>
+              <h3 className="text-2xl font-bold text-center mb-4">Side Selection Phase</h3>
               {canSelectSide() ? (
-                <div className="grid grid-cols-2 gap-8 mt-6">
-                  <button
-                    onClick={() => handleSideSelect('attack')}
-                    className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
-                  >
-                    <h4 className="text-xl font-bold mb-2">ATTACK</h4>
-                    <p className="text-gray-400">Start on attacking side</p>
-                  </button>
-                  <button
-                    onClick={() => handleSideSelect('defend')}
-                    className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
-                  >
-                    <h4 className="text-xl font-bold mb-2">DEFEND</h4>
-                    <p className="text-gray-400">Start on defending side</p>
-                  </button>
-                </div>
+                <>
+                  <p className="text-gray-400 text-center mb-6">
+                    Your team gets to choose the starting side
+                  </p>
+                  <div className="grid grid-cols-2 gap-8 mt-6">
+                    <button
+                      onClick={() => handleSideSelect('attack')}
+                      className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
+                    >
+                      <h4 className="text-xl font-bold mb-2">ATTACK</h4>
+                      <p className="text-gray-400">Start on attacking side</p>
+                    </button>
+                    <button
+                      onClick={() => handleSideSelect('defend')}
+                      className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
+                    >
+                      <h4 className="text-xl font-bold mb-2">DEFEND</h4>
+                      <p className="text-gray-400">Start on defending side</p>
+                    </button>
+                  </div>
+                </>
               ) : (
-                <p className="text-gray-400 text-center">
-                  Waiting for {roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId 
-                    ? roomStatus.team1.teamName 
-                    : roomStatus.team2.teamName} to select starting side...
-                </p>
+                <div className="text-center">
+                  <p className="text-gray-400">
+                    Waiting for {getUserTeamId() === roomStatus.pickBanState.firstPickTeam 
+                      ? "opponent" 
+                      : "your team"} to select starting side...
+                  </p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    {roomStatus.pickBanState.selectedMap.name} has been selected as the map
+                  </p>
+                </div>
               )}
             </div>
           </div>
         )}
 
-        {roomStatus?.pickBanState?.selectedMap && (
+        {roomStatus?.pickBanState?.selectedMap && roomStatus?.pickBanState?.selectedSide && (
           <div className="mt-8 text-center">
             <div className="bg-green-500/10 p-6 rounded-lg">
               <h3 className="text-xl font-bold text-green-500 mb-2">Match Setup Complete!</h3>
               <p className="text-gray-400">
                 Map and sides have been selected. You may now exit the room.
               </p>
-              <p className="text-gray-400 mt-2">
-                Selected Map: {roomStatus.pickBanState.selectedMap.name}
-              </p>
+              <div className="mt-4 space-y-2">
+                <p className="text-gray-400">
+                  Selected Map: <span className="text-white">{roomStatus.pickBanState.selectedMap.name}</span>
+                </p>
+                <p className="text-gray-400">
+                  Starting Sides: <span className="text-white">
+                    {roomStatus.pickBanState.selectedSide.teamId === roomStatus.team1.teamId
+                      ? `${roomStatus.team1.teamName} (${roomStatus.pickBanState.selectedSide.side})`
+                      : `${roomStatus.team2.teamName} (${roomStatus.pickBanState.selectedSide.side})`
+                    }
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         )}
