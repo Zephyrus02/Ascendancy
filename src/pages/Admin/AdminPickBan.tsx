@@ -6,8 +6,12 @@ import { Separator } from '../../components/Separator';
 import { Loader2 } from 'lucide-react';
 import { getRoomStatus, startPickBan } from '../../services/api';
 import { MapPool } from '../../components/game/MapPool';
-import { valorantMaps } from '../../data/maps';
+import { valorantMaps, ValorantMap } from '../../data/maps'; // Add this import at the top
 import { toast } from 'react-hot-toast';
+
+interface MapStatus {
+  [key: string]: 'available' | 'picked' | 'banned';
+}
 
 interface RoomStatus {
   roomCode: string;
@@ -28,6 +32,19 @@ interface RoomStatus {
     captainId: string;
     captainUsername: string;
     joined: boolean;
+  };
+  pickBanState: {
+    isStarted: boolean;
+    currentTurn: string;
+    remainingMaps: ValorantMap[]; // Now TypeScript knows what ValorantMap is
+    selectedMap?: ValorantMap;
+    mapVetoStarted: boolean;
+    mapStatuses: MapStatus;
+    firstPickTeam: string;
+    selectedSide?: {
+      teamId: string;
+      side: 'attack' | 'defend';
+    };
   };
 }
 
@@ -73,16 +90,41 @@ export function AdminPickBan() {
                           roomStatus?.adminJoined;
 
   const getStatusMessage = () => {
-    if (allPlayersJoined) {
+    if (!allPlayersJoined) {
       return {
-        title: "Map VETO",
-        description: "Starting the map selection process..."
+        title: "Waiting for Players",
+        description: "Wait for all team captains to join before starting the map selection"
+      };
+    }
+    if (!roomStatus?.pickBanState?.isStarted) {
+      return {
+        title: "Ready to Start",
+        description: "All players have joined. You can now start the map veto process."
+      };
+    }
+    if (roomStatus?.pickBanState?.selectedMap && !roomStatus?.pickBanState?.selectedSide) {
+      return {
+        title: "Side Selection",
+        description: "Map has been selected. Waiting for side selection..."
+      };
+    }
+    if (roomStatus?.pickBanState?.selectedSide) {
+      return {
+        title: "Setup Complete",
+        description: "Map and sides have been selected. Room setup is complete."
       };
     }
     return {
-      title: "Waiting for Players",
-      description: "Wait for all team captains to join before starting the map selection"
+      title: "Map Veto in Progress",
+      description: `Current Turn: ${getCurrentTurnTeamName()}`
     };
+  };
+
+  const getCurrentTurnTeamName = () => {
+    if (!roomStatus?.pickBanState?.currentTurn) return "";
+    return roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId 
+      ? roomStatus.team1.teamName 
+      : roomStatus.team2.teamName;
   };
 
   const handleStartPickBan = async () => {
@@ -96,11 +138,6 @@ export function AdminPickBan() {
       console.error('Error starting pick/ban:', error);
       toast.error('Failed to start map veto process');
     }
-  };
-
-  const handleMapSelect = (mapId: string) => {
-    // Add your map selection logic here
-    console.log('Selected map:', mapId);
   };
 
   if (isLoading) {
@@ -189,13 +226,34 @@ export function AdminPickBan() {
           </div>
 
           {/* Map Pool */}
-          {pickBanStarted && (
-            <MapPool
-              maps={maps}
-              isAdmin={true}
-              onMapSelect={handleMapSelect}
-              disabled={!allPlayersJoined}
-            />
+          {roomStatus?.pickBanState?.isStarted && !roomStatus?.pickBanState?.selectedSide && (
+            <div className="mt-8">
+              <MapPool
+                maps={maps}
+                isAdmin={true}
+                disabled={true}
+                mapStatuses={roomStatus.pickBanState.mapStatuses}
+                currentTurn={roomStatus.pickBanState.currentTurn}
+                roomStatus={roomStatus}
+              />
+            </div>
+          )}
+
+          {/* Show Final Selection */}
+          {roomStatus?.pickBanState?.selectedMap && roomStatus?.pickBanState?.selectedSide && (
+            <div className="mt-8 text-center">
+              <div className="bg-green-500/10 p-6 rounded-lg">
+                <h3 className="text-xl font-bold text-green-500 mb-2">Match Setup Complete!</h3>
+                <p className="text-gray-400 mt-2">
+                  Selected Map: {roomStatus.pickBanState.selectedMap.name}
+                </p>
+                <p className="text-gray-400">
+                  {roomStatus.pickBanState.selectedSide.teamId === roomStatus.team1.teamId 
+                    ? `${roomStatus.team1.teamName} starts on ${roomStatus.pickBanState.selectedSide.side}`
+                    : `${roomStatus.team2.teamName} starts on ${roomStatus.pickBanState.selectedSide.side}`}
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </div>

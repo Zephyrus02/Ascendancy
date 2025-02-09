@@ -37,11 +37,16 @@ interface RoomStatus {
   pickBanState: {
     isStarted: boolean;
     currentTurn: string;
-    remainingMaps: string[];
-    selectedMap?: ValorantMap; // Change from string to ValorantMap
+    remainingMaps: ValorantMap[];
+    selectedMap?: ValorantMap;
     mapVetoStarted: boolean;
     mapStatuses: MapStatus;
     firstPickTeam: string;
+    sideSelect?: {
+      isStarted: boolean;
+      currentTurn: string;
+      selectedSide?: 'attack' | 'defend';
+    };
     selectedSide?: {
       teamId: string;
       side: 'attack' | 'defend';
@@ -157,6 +162,7 @@ export function PickBan() {
   const canSelectSide = () => {
     if (!roomStatus || !user) return false;
     const userTeamId = getUserTeamId();
+    // Team that didn't get first pick in map veto gets to pick side
     return userTeamId && userTeamId !== roomStatus.pickBanState.firstPickTeam;
   };
 
@@ -307,26 +313,36 @@ export function PickBan() {
           </div>
         )}
 
-        {roomStatus?.pickBanState?.selectedMap && !roomStatus?.pickBanState?.selectedSide && canSelectSide() && (
+        {roomStatus?.pickBanState?.selectedMap && !roomStatus?.pickBanState?.selectedSide && (
           <div className="mt-8 animate-fadeIn">
             <div className="bg-[#1a1a1a] p-8 rounded-lg border-2 border-[#FF4655]">
-              <h3 className="text-2xl font-bold text-center mb-4">Select Starting Side</h3>
-              <div className="grid grid-cols-2 gap-8 mt-6">
-                <button
-                  onClick={() => handleSideSelect('attack')}
-                  className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
-                >
-                  <h4 className="text-xl font-bold mb-2">ATTACK</h4>
-                  <p className="text-gray-400">Start on attacking side</p>
-                </button>
-                <button
-                  onClick={() => handleSideSelect('defend')}
-                  className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
-                >
-                  <h4 className="text-xl font-bold mb-2">DEFEND</h4>
-                  <p className="text-gray-400">Start on defending side</p>
-                </button>
-              </div>
+              <h3 className="text-2xl font-bold text-center mb-4">
+                {canSelectSide() ? 'Select Starting Side' : 'Waiting for Side Selection'}
+              </h3>
+              {canSelectSide() ? (
+                <div className="grid grid-cols-2 gap-8 mt-6">
+                  <button
+                    onClick={() => handleSideSelect('attack')}
+                    className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
+                  >
+                    <h4 className="text-xl font-bold mb-2">ATTACK</h4>
+                    <p className="text-gray-400">Start on attacking side</p>
+                  </button>
+                  <button
+                    onClick={() => handleSideSelect('defend')}
+                    className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
+                  >
+                    <h4 className="text-xl font-bold mb-2">DEFEND</h4>
+                    <p className="text-gray-400">Start on defending side</p>
+                  </button>
+                </div>
+              ) : (
+                <p className="text-gray-400 text-center">
+                  Waiting for {roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId 
+                    ? roomStatus.team1.teamName 
+                    : roomStatus.team2.teamName} to select their starting side...
+                </p>
+              )}
             </div>
           </div>
         )}
