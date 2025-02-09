@@ -44,8 +44,7 @@ export function MapPool({
   const isUserTurn = currentTurn === userTeamId;
   const isFinalMapSelected = roomStatus?.pickBanState?.selectedMap !== undefined;
   
-  // Remove this check for admin view to always show maps
-  if (isFinalMapSelected && !isAdmin) {
+  if (isFinalMapSelected) {
     return null;
   }
   

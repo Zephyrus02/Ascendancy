@@ -36,7 +36,7 @@ interface RoomStatus {
   pickBanState: {
     isStarted: boolean;
     currentTurn: string;
-    remainingMaps: ValorantMap[]; // Now TypeScript knows what ValorantMap is
+    remainingMaps: ValorantMap[];
     selectedMap?: ValorantMap;
     mapVetoStarted: boolean;
     mapStatuses: MapStatus;
@@ -102,18 +102,10 @@ export function AdminPickBan() {
         description: "All players have joined. You can now start the map veto process."
       };
     }
-
-    const currentTeam = roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId 
-      ? roomStatus.team1.teamName 
-      : roomStatus.team2.teamName;
-
     if (roomStatus?.pickBanState?.selectedMap && !roomStatus?.pickBanState?.selectedSide) {
-      const sideSelectTeam = roomStatus.pickBanState.firstPickTeam === roomStatus.team1.teamId
-        ? roomStatus.team2.teamName
-        : roomStatus.team1.teamName;
       return {
-        title: "Side Selection Phase",
-        description: `Waiting for ${sideSelectTeam} to select starting side...`
+        title: "Side Selection",
+        description: "Map has been selected. Waiting for side selection..."
       };
     }
     if (roomStatus?.pickBanState?.selectedSide) {
@@ -122,10 +114,9 @@ export function AdminPickBan() {
         description: "Map and sides have been selected. Room setup is complete."
       };
     }
-
     return {
       title: "Map Veto in Progress",
-      description: `Current Turn: ${currentTeam}`
+      description: `Current Turn: ${getCurrentTurnTeamName()}`
     };
   };
 
@@ -289,14 +280,12 @@ export function AdminPickBan() {
             <div className="mt-8">
               <h3 className="text-xl font-bold mb-4">Map Veto Phase</h3>
               <MapPool
-                maps={valorantMaps} // Use valorantMaps directly instead of local state
+                maps={maps}
                 isAdmin={true}
                 disabled={true}
                 mapStatuses={roomStatus.pickBanState.mapStatuses}
                 currentTurn={roomStatus.pickBanState.currentTurn}
-                userTeamId={undefined} // Admin doesn't have a team ID
                 roomStatus={roomStatus}
-                onMapSelect={() => {}} // Empty function since admin can't select maps
               />
             </div>
           )}

@@ -37,16 +37,11 @@ interface RoomStatus {
   pickBanState: {
     isStarted: boolean;
     currentTurn: string;
-    remainingMaps: ValorantMap[];
+    remainingMaps: string[];
     selectedMap?: ValorantMap;
     mapVetoStarted: boolean;
     mapStatuses: MapStatus;
     firstPickTeam: string;
-    sideSelect?: {
-      isStarted: boolean;
-      currentTurn: string;
-      selectedSide?: 'attack' | 'defend';
-    };
     selectedSide?: {
       teamId: string;
       side: 'attack' | 'defend';
@@ -347,29 +342,20 @@ export function PickBan() {
           </div>
         )}
 
-        {/* {roomStatus?.pickBanState?.selectedMap && roomStatus?.pickBanState?.selectedSide && (
+        {roomStatus?.pickBanState?.selectedMap && (
           <div className="mt-8 text-center">
             <div className="bg-green-500/10 p-6 rounded-lg">
               <h3 className="text-xl font-bold text-green-500 mb-2">Match Setup Complete!</h3>
               <p className="text-gray-400">
                 Map and sides have been selected. You may now exit the room.
               </p>
-              <div className="mt-4 space-y-2">
-                <p className="text-gray-400">
-                  Selected Map: <span className="text-white">{roomStatus.pickBanState.selectedMap.name}</span>
-                </p>
-                <p className="text-gray-400">
-                  Starting Sides: <span className="text-white">
-                    {roomStatus.pickBanState.selectedSide.teamId === roomStatus.team1.teamId
-                      ? `${roomStatus.team1.teamName} (${roomStatus.pickBanState.selectedSide.side})`
-                      : `${roomStatus.team2.teamName} (${roomStatus.pickBanState.selectedSide.side})`
-                    }
-                  </span>
-                </p>
-              </div>
+              <p className="text-gray-400 mt-2">
+                Selected Map: {roomStatus.pickBanState.selectedMap.name}
+              </p>
             </div>
           </div>
-        )} */}
+        )}
+
       </div>
       <Footer />
     </div>
