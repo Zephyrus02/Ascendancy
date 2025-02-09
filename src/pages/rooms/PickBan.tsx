@@ -9,7 +9,6 @@ import { getRoomStatus, banMap, selectSide } from '../../services/api';
 import { MapPool } from '../../components/game/MapPool';
 import { valorantMaps } from '../../data/maps';
 import { toast } from 'react-hot-toast';
-import { SideSelect } from '../../components/game/SideSelect';
 
 interface MapStatus {
   [key: string]: 'available' | 'picked' | 'banned';
@@ -42,11 +41,6 @@ interface RoomStatus {
     selectedMap?: string;
     mapVetoStarted: boolean;
     mapStatuses: MapStatus;
-    sideSelect?: {
-      isStarted: boolean;
-      currentTurn: string;
-      selectedSide?: 'attack' | 'defend';
-    };
   };
 }
 
@@ -188,17 +182,6 @@ export function PickBan() {
     }
   };
 
-  const isSideSelectInProgress = () => {
-    return Boolean(roomStatus?.pickBanState?.sideSelect?.isStarted);
-  };
-
-  const isSideSelectTurn = () => {
-    if (!roomStatus?.pickBanState?.sideSelect || !user) return false;
-    
-    const userTeamId = getUserTeamId();
-    return userTeamId === roomStatus.pickBanState.sideSelect.currentTurn;
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#111] text-white flex items-center justify-center">
@@ -287,7 +270,7 @@ export function PickBan() {
               disabled={!isUserTurn()}
               mapStatuses={roomStatus?.pickBanState?.mapStatuses}
               currentTurn={roomStatus?.pickBanState?.currentTurn}
-              userTeamId={getUserTeamId()} // Now returns string | undefined instead of null
+              userTeamId={getUserTeamId()}
               onMapSelect={handleMapSelect}
             />
           </div>
@@ -306,27 +289,7 @@ export function PickBan() {
             </p>
           </div>
         )}
-
-        {roomStatus?.pickBanState?.selectedMap && (
-          <SideSelect
-            isUserTurn={isUserTurn()}
-            onSideSelect={handleSideSelect}
-            disabled={false}
-          />
-        )}
-
-        {/* Show side selection when a map is selected and side select is initiated */}
-        {isSideSelectInProgress() && (
-          <div className="mt-8 animate-fadeIn">
-            <SideSelect
-              isUserTurn={isSideSelectTurn()}
-              onSideSelect={handleSideSelect}
-              disabled={!isSideSelectTurn()}
-            />
-          </div>
-        )}
       </div>
-
       <Footer />
     </div>
   );
