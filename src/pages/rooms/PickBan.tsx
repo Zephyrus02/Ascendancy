@@ -7,7 +7,7 @@ import { Separator } from '../../components/Separator';
 import { Loader2 } from 'lucide-react';
 import { getRoomStatus, banMap, selectSide } from '../../services/api';
 import { MapPool } from '../../components/game/MapPool';
-import { valorantMaps } from '../../data/maps';
+import { ValorantMap, valorantMaps } from '../../data/maps';
 import { toast } from 'react-hot-toast';
 
 interface MapStatus {
@@ -38,9 +38,14 @@ interface RoomStatus {
     isStarted: boolean;
     currentTurn: string;
     remainingMaps: string[];
-    selectedMap?: string;
+    selectedMap?: ValorantMap; // Change from string to ValorantMap
     mapVetoStarted: boolean;
     mapStatuses: MapStatus;
+    firstPickTeam: string;
+    selectedSide?: {
+      teamId: string;
+      side: 'attack' | 'defend';
+    };
   };
 }
 
@@ -141,6 +146,12 @@ export function PickBan() {
       : user.id === roomStatus.team2.captainId 
         ? roomStatus.team2.teamId 
         : undefined;
+  };
+
+  const canSelectSide = () => {
+    if (!roomStatus || !user) return false;
+    const userTeamId = getUserTeamId();
+    return userTeamId && userTeamId !== roomStatus.pickBanState.firstPickTeam;
   };
 
   const handleMapSelect = async (mapId: string) => {
@@ -287,6 +298,44 @@ export function PickBan() {
                 ? "The pick/ban phase will begin once everyone is ready"
                 : "The admin will start the map veto process shortly"}
             </p>
+          </div>
+        )}
+
+        {roomStatus?.pickBanState?.selectedMap && !roomStatus?.pickBanState?.selectedSide && canSelectSide() && (
+          <div className="mt-8 animate-fadeIn">
+            <div className="bg-[#1a1a1a] p-8 rounded-lg border-2 border-[#FF4655]">
+              <h3 className="text-2xl font-bold text-center mb-4">Select Starting Side</h3>
+              <div className="grid grid-cols-2 gap-8 mt-6">
+                <button
+                  onClick={() => handleSideSelect('attack')}
+                  className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
+                >
+                  <h4 className="text-xl font-bold mb-2">ATTACK</h4>
+                  <p className="text-gray-400">Start on attacking side</p>
+                </button>
+                <button
+                  onClick={() => handleSideSelect('defend')}
+                  className="p-6 border-2 border-[#FF4655] rounded-lg hover:bg-[#FF4655]/10 transition-all"
+                >
+                  <h4 className="text-xl font-bold mb-2">DEFEND</h4>
+                  <p className="text-gray-400">Start on defending side</p>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {roomStatus?.pickBanState?.selectedMap && (
+          <div className="mt-8 text-center">
+            <div className="bg-green-500/10 p-6 rounded-lg">
+              <h3 className="text-xl font-bold text-green-500 mb-2">Match Setup Complete!</h3>
+              <p className="text-gray-400">
+                Map and sides have been selected. You may now exit the room.
+              </p>
+              <p className="text-gray-400 mt-2">
+                Selected Map: {roomStatus.pickBanState.selectedMap.name}
+              </p>
+            </div>
           </div>
         )}
       </div>
