@@ -14,7 +14,16 @@ interface MapPoolProps {
   currentTurn?: string;
   userTeamId?: string;
   roomStatus?: {
+    team1: {
+      teamId: string;
+      teamName: string;
+    };
+    team2: {
+      teamId: string;
+      teamName: string;
+    };
     pickBanState?: {
+      currentTurn: string;
       selectedMap?: {
         name: string;
       };
@@ -35,7 +44,8 @@ export function MapPool({
   const isUserTurn = currentTurn === userTeamId;
   const isFinalMapSelected = roomStatus?.pickBanState?.selectedMap !== undefined;
   
-  if (isFinalMapSelected) {
+  // Remove this check for admin view to always show maps
+  if (isFinalMapSelected && !isAdmin) {
     return null;
   }
   
@@ -49,8 +59,14 @@ export function MapPool({
       {/* Current Turn and Status */}
       <div className="text-center mb-6">
         {currentTurn && (
-          <p className={`text-lg ${isUserTurn ? 'text-green-400' : 'text-gray-400'}`}>
-            {isUserTurn ? 'Your turn to ban a map' : 'Waiting for opponent to ban a map'}
+          <p className={`text-lg ${isAdmin ? 'text-gray-400' : isUserTurn ? 'text-green-400' : 'text-gray-400'}`}>
+            {isAdmin ? (
+              `Current Turn: ${roomStatus?.pickBanState?.currentTurn === roomStatus?.team1?.teamId 
+                ? roomStatus?.team1?.teamName 
+                : roomStatus?.team2?.teamName}`
+            ) : (
+              isUserTurn ? 'Your turn to ban a map' : 'Waiting for opponent to ban a map'
+            )}
           </p>
         )}
         {roomStatus?.pickBanState?.selectedMap && (

@@ -6,7 +6,7 @@ import { Separator } from '../../components/Separator';
 import { Loader2 } from 'lucide-react';
 import { getRoomStatus, startPickBan } from '../../services/api';
 import { MapPool } from '../../components/game/MapPool';
-import { valorantMaps, ValorantMap } from '../../data/maps'; // Add this import at the top
+import { ValorantMap, valorantMaps } from '../../data/maps';
 import { toast } from 'react-hot-toast';
 
 interface MapStatus {
@@ -287,13 +287,16 @@ export function AdminPickBan() {
           {/* Map Pool */}
           {roomStatus?.pickBanState?.isStarted && !roomStatus?.pickBanState?.selectedSide && (
             <div className="mt-8">
+              <h3 className="text-xl font-bold mb-4">Map Veto Phase</h3>
               <MapPool
-                maps={maps}
+                maps={valorantMaps} // Use valorantMaps directly instead of local state
                 isAdmin={true}
                 disabled={true}
                 mapStatuses={roomStatus.pickBanState.mapStatuses}
                 currentTurn={roomStatus.pickBanState.currentTurn}
+                userTeamId={undefined} // Admin doesn't have a team ID
                 roomStatus={roomStatus}
+                onMapSelect={() => {}} // Empty function since admin can't select maps
               />
             </div>
           )}
