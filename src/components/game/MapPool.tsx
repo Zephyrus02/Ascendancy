@@ -1,4 +1,4 @@
-import { Map } from '../../data/maps';
+import { ValorantMap } from '../../data/maps';
 import { Separator } from '../Separator';
 
 interface MapStatus {
@@ -6,28 +6,50 @@ interface MapStatus {
 }
 
 interface MapPoolProps {
-  maps: Map[];
+  maps: ValorantMap[];
   isAdmin?: boolean;
   onMapSelect?: (mapId: string) => void;
   disabled?: boolean;
   mapStatuses?: MapStatus;
+  currentTurn?: string;
+  userTeamId?: string;
 }
 
-export function MapPool({ maps, isAdmin, onMapSelect, disabled, mapStatuses }: MapPoolProps) {
+export function MapPool({ 
+  maps, 
+  isAdmin, 
+  onMapSelect, 
+  disabled, 
+  mapStatuses,
+  currentTurn,
+  userTeamId 
+}: MapPoolProps) {
+  const isUserTurn = currentTurn === userTeamId;
+  
   return (
     <div className="mt-12">
       <h3 className="text-2xl font-bold text-center mb-8">
         MAP <span className="text-[#FF4655]">VETO</span>
       </h3>
-    <Separator />
+      <Separator />
+
+      {/* Current Turn Indicator */}
+      {currentTurn && (
+        <div className="text-center mb-4">
+          <p className={`text-lg ${isUserTurn ? 'text-green-400' : 'text-gray-400'}`}>
+            {isUserTurn ? "Your turn to ban a map" : "Waiting for opponent to ban a map"}
+          </p>
+        </div>
+      )}
 
       <div className="flex h-[600px] gap-1">
         {maps.map((map) => (
           <div
             key={map.id}
             className={`relative flex-1 transition-all duration-500 ease-in-out
-                       group hover:flex-[2] overflow-hidden ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-            onClick={() => !disabled && isAdmin && onMapSelect?.(map.id)}
+                       group hover:flex-[2] overflow-hidden 
+                       ${(!isUserTurn || disabled) ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+            onClick={() => isUserTurn && !disabled && onMapSelect?.(map.id)}
           >
             {/* Background Image Container */}
             <div className="absolute inset-0 w-[200%] h-full">

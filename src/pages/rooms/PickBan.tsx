@@ -10,6 +10,10 @@ import { MapPool } from '../../components/game/MapPool';
 import { valorantMaps } from '../../data/maps';
 import { toast } from 'react-hot-toast';
 
+interface MapStatus {
+  [key: string]: 'available' | 'picked' | 'banned';
+}
+
 interface RoomStatus {
   roomCode: string;
   roomPasskey: string;
@@ -35,8 +39,8 @@ interface RoomStatus {
     currentTurn: string;
     remainingMaps: string[];
     selectedMap?: string;
-    mapVetoStarted: boolean; // Add this field
-    mapStatuses?: any;
+    mapVetoStarted: boolean;
+    mapStatuses: MapStatus;
   };
 }
 
@@ -115,6 +119,32 @@ export function PickBan() {
 
   const isPickBanInProgress = () => {
     return Boolean(roomStatus?.pickBanState?.isStarted);
+  };
+
+  const isUserTurn = () => {
+    if (!roomStatus || !user) return false;
+    
+    const userTeamId = user.id === roomStatus.team1.captainId 
+      ? roomStatus.team1.teamId 
+      : user.id === roomStatus.team2.captainId 
+        ? roomStatus.team2.teamId 
+        : null;
+
+    return userTeamId === roomStatus.pickBanState?.currentTurn;
+  };
+
+  const getUserTeamId = (): string | undefined => {
+    if (!roomStatus || !user) return undefined;
+    
+    return user.id === roomStatus.team1.captainId 
+      ? roomStatus.team1.teamId 
+      : user.id === roomStatus.team2.captainId 
+        ? roomStatus.team2.teamId 
+        : undefined;
+  };
+
+  const handleMapSelect = (mapId: string) => {
+    // Handle map selection logic here
   };
 
   if (isLoading) {
@@ -202,8 +232,11 @@ export function PickBan() {
             <h3 className="text-xl font-bold mb-4">Map Veto Phase</h3>
             <MapPool
               maps={maps}
-              disabled={true}
+              disabled={!isUserTurn()}
               mapStatuses={roomStatus?.pickBanState?.mapStatuses}
+              currentTurn={roomStatus?.pickBanState?.currentTurn}
+              userTeamId={getUserTeamId()} // Now returns string | undefined instead of null
+              onMapSelect={handleMapSelect}
             />
           </div>
         ) : (

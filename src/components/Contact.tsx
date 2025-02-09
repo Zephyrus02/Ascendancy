@@ -38,7 +38,7 @@ export function Contact() {
       setFormData({
         from_name: '',
         reply_to: '',
-        to_email: 'aneeshraskar@gmail.com',
+        to_email: import.meta.env.VITE_EMAIL_ID,
         subject: '',
         message: ''
       });

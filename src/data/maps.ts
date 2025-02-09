@@ -1,10 +1,10 @@
-export interface Map {
+export interface ValorantMap {
   id: string;
   name: string;
   image: string;
 }
 
-export const valorantMaps: Map[] = [
+export const valorantMaps: ValorantMap[] = [
   {
     id: 'ascent',
     name: 'ASCENT',
