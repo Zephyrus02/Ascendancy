@@ -198,10 +198,10 @@ export function PickBan() {
     const userTeamId = getUserTeamId();
     if (!userTeamId) return false;
     
-    // The team that went second in map veto (didn't get firstPickTeam) gets to pick sides
+    // Can select side if it's this team's turn and no side has been selected yet
     return roomStatus.pickBanState.selectedMap && 
            !roomStatus.pickBanState.selectedSide &&
-           userTeamId !== roomStatus.pickBanState.firstPickTeam;
+           userTeamId === roomStatus.pickBanState.currentTurn;
   };
 
   if (isLoading) {
@@ -312,15 +312,19 @@ export function PickBan() {
           </div>
         )}
 
+        {/* Side Selection Section */}
         {roomStatus?.pickBanState?.selectedMap && !roomStatus?.pickBanState?.selectedSide && (
           <div className="mt-8 animate-fadeIn">
             <div className="bg-[#1a1a1a] p-8 rounded-lg border-2 border-[#FF4655]">
               <h3 className="text-2xl font-bold text-center mb-4">
                 Side Selection Phase
               </h3>
+              <p className="text-gray-400 text-center mb-6">
+                Selected Map: <span className="text-white">{roomStatus.pickBanState.selectedMap.name}</span>
+              </p>
               {canSelectSide() ? (
                 <>
-                  <p className="text-gray-400 text-center mb-4">Your team gets to choose the starting side</p>
+                  <p className="text-green-400 text-center mb-4">Your team gets to choose the starting side</p>
                   <div className="grid grid-cols-2 gap-8 mt-6">
                     <button
                       onClick={() => handleSideSelect('attack')}
@@ -340,7 +344,9 @@ export function PickBan() {
                 </>
               ) : (
                 <p className="text-gray-400 text-center">
-                  Waiting for opponent to select side...
+                  Waiting for {roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId 
+                    ? roomStatus.team1.teamName 
+                    : roomStatus.team2.teamName} to select starting side...
                 </p>
               )}
             </div>
