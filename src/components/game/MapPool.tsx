@@ -33,6 +33,11 @@ export function MapPool({
   roomStatus
 }: MapPoolProps) {
   const isUserTurn = currentTurn === userTeamId;
+  const isFinalMapSelected = roomStatus?.pickBanState?.selectedMap !== undefined;
+  
+  if (isFinalMapSelected) {
+    return null;
+  }
   
   return (
     <div className="mt-12">

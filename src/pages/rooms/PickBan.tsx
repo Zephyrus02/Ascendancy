@@ -116,6 +116,12 @@ export function PickBan() {
         description: "Waiting for admin to start the map selection process..."
       };
     }
+    if (roomStatus?.pickBanState?.selectedMap) {
+      return {
+        title: "Side Selection Phase",
+        description: "Map has been selected. Waiting for side selection..."
+      };
+    }
     return {
       title: "Map Pick/Ban Phase",
       description: "Map selection in progress..."
