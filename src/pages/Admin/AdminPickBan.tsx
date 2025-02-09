@@ -102,10 +102,18 @@ export function AdminPickBan() {
         description: "All players have joined. You can now start the map veto process."
       };
     }
+
+    const currentTeam = roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId 
+      ? roomStatus.team1.teamName 
+      : roomStatus.team2.teamName;
+
     if (roomStatus?.pickBanState?.selectedMap && !roomStatus?.pickBanState?.selectedSide) {
+      const sideSelectTeam = roomStatus.pickBanState.firstPickTeam === roomStatus.team1.teamId
+        ? roomStatus.team2.teamName
+        : roomStatus.team1.teamName;
       return {
-        title: "Side Selection",
-        description: "Map has been selected. Waiting for side selection..."
+        title: "Side Selection Phase",
+        description: `Waiting for ${sideSelectTeam} to select starting side...`
       };
     }
     if (roomStatus?.pickBanState?.selectedSide) {
@@ -114,9 +122,10 @@ export function AdminPickBan() {
         description: "Map and sides have been selected. Room setup is complete."
       };
     }
+
     return {
       title: "Map Veto in Progress",
-      description: `Current Turn: ${getCurrentTurnTeamName()}`
+      description: `Current Turn: ${currentTeam}`
     };
   };
 
@@ -224,6 +233,56 @@ export function AdminPickBan() {
               </div>
             </div>
           </div>
+
+          {/* Map Veto Status */}
+          {roomStatus?.pickBanState?.isStarted && (
+            <div className="mt-8 bg-[#1a1a1a] p-6 rounded-lg">
+              <h3 className="text-xl font-bold mb-4">Map Veto Status</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-white/70">Current Turn:</span>
+                  <span className={`px-3 py-1 rounded-full text-sm ${
+                    roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId
+                      ? 'bg-blue-500/10 text-blue-500'
+                      : 'bg-red-500/10 text-red-500'
+                  }`}>
+                    {roomStatus.pickBanState.currentTurn === roomStatus.team1.teamId
+                      ? roomStatus.team1.teamName
+                      : roomStatus.team2.teamName}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-white/70">First Pick Team:</span>
+                  <span className="text-white/90">
+                    {roomStatus.pickBanState.firstPickTeam === roomStatus.team1.teamId
+                      ? roomStatus.team1.teamName
+                      : roomStatus.team2.teamName}
+                  </span>
+                </div>
+
+                {roomStatus.pickBanState.selectedMap && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/70">Selected Map:</span>
+                    <span className="text-green-500">
+                      {roomStatus.pickBanState.selectedMap.name}
+                    </span>
+                  </div>
+                )}
+
+                {roomStatus.pickBanState.selectedSide && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/70">Side Selection:</span>
+                    <span className="text-white/90">
+                      {roomStatus.pickBanState.selectedSide.teamId === roomStatus.team1.teamId
+                        ? `${roomStatus.team1.teamName} starts on ${roomStatus.pickBanState.selectedSide.side}`
+                        : `${roomStatus.team2.teamName} starts on ${roomStatus.pickBanState.selectedSide.side}`}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Map Pool */}
           {roomStatus?.pickBanState?.isStarted && !roomStatus?.pickBanState?.selectedSide && (
