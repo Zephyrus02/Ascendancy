@@ -1,4 +1,4 @@
-import { Announcement } from '../types/Announcement';
+import { Announcement } from '../types/environment.d.ts.';
 
 interface Props {
   announcement: Announcement;

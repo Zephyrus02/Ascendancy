@@ -23,7 +23,7 @@ export function TNC() {
             <Separator />
             <div className="space-y-4 text-white/70">
               <p className="leading-relaxed">
-                For the purpose of these Terms and Conditions, The term "we", "us", "our" used anywhere on this page shall mean ATHARV PARAG CHORDIYA, whose registered/operational office is Kalash,Borse Nagar,Satana Naka,Malegaon Nashik MAHARASHTRA 423203 . "you", "your", "user", "visitor" shall mean any natural or legal person who is visiting our website and/or agreed to purchase from us.
+                For the purpose of these Terms and Conditions, The term "we", "us", "our" used anywhere on this page shall mean Aneesh Raskar, whose registered/operational office is VIT Chennai, Vandalur - Kelambakkam Road, Chennai Kanchipuram TAMIL NADU 600127. "you", "your", "user", "visitor" shall mean any natural or legal person who is visiting our website and/or agreed to purchase from us.
               </p>
               <p className="leading-relaxed">
                 Your use of the website and/or purchase from us are governed by following Terms and Conditions:
@@ -50,13 +50,16 @@ export function TNC() {
                 From time to time our website may also include links to other websites. These links are provided for your convenience to provide further information.
               </p>
               <p className="leading-relaxed">
-                You may not create a link to our website from another website or document without ATHARV PARAG CHORDIYA's prior written consent.
+                You may not create a link to our website from another website or document without Aneesh Raskar's prior written consent.
               </p>
               <p className="leading-relaxed">
                 Any dispute arising out of use of our website and/or purchase with us and/or any engagement with us is subject to the laws of India.
               </p>
               <p className="leading-relaxed">
-                We, shall be under no liability whatsoever in respect of any loss or damage arising directly or indirectly out of the decline of authorization for any Transaction, on Account of the Cardholder having exceeded the preset limit mutually agreed by us with our acquiring bank from time to time
+                We, shall be under no liability whatsoever in respect of any loss or damage arising directly or indirectly out of the decline of authorization for any Transaction, on Account of the Cardholder having exceeded the preset limit mutually agreed by us with our acquiring bank from time to time.
+              </p>
+              <p className="leading-relaxed italic mt-8">
+                Disclaimer: The above content is created at Aneesh Anil Raskar's sole discretion. Razorpay shall not be liable for any content provided here and shall not be responsible for any claims and liability that may arise due to merchant's non-adherence to it.
               </p>
             </div>
           </section>
@@ -64,7 +67,7 @@ export function TNC() {
 
         <div className="mt-16 text-center">
           <p className="text-white/50 text-sm">
-            Last updated: Feb 5 2025
+            Last updated: Feb 4 2025
           </p>
         </div>
       </div>
